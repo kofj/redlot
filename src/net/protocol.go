@@ -95,3 +95,14 @@ func MalformedLength(expected int, got int) error {
 func MalformedMissingCRLF() error {
 	return fmt.Errorf("Mailformed request: line should end with CRLF")
 }
+
+type Reply io.WriterTo
+
+type StatusReply struct {
+	Code string
+}
+
+func (r *StatusReply) WriteTo(w io.Writer) (int64, error) {
+	n, err := w.Write([]byte("+" + r.Code + "\r\n"))
+	return int64(n), err
+}
