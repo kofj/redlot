@@ -133,7 +133,7 @@ type BulkReply struct {
 
 func (r *BulkReply) WriteTo(w io.Writer) (int64, error) {
 	if r.Exist {
-		n, err := w.Write([]byte(fmt.Sprintf("$%d\r\n%s\r\n", len(r.Bulk), r.Bulk)))
+		n, err := w.Write([]byte("$" + strconv.Itoa(len(r.Bulk)) + "\r\n" + r.Bulk + "\r\n"))
 		return int64(n), err
 	} else {
 		n, err := w.Write([]byte("$-1\r\n"))
