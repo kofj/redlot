@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io/ioutil"
+	"strconv"
 	"strings"
 
 	"io"
@@ -113,5 +114,14 @@ type ErrReply struct {
 
 func (r *ErrReply) WriteTo(w io.Writer) (int64, error) {
 	n, err := w.Write([]byte("-ERR " + r.Msg + "\r\n"))
+	return int64(n), err
+}
+
+type IntReply struct {
+	Nos int64
+}
+
+func (r *IntReply) WriteTo(w io.Writer) (int64, error) {
+	n, err := w.Write([]byte(":" + strconv.FormatInt(r.Nos, 10) + "\r\n"))
 	return int64(n), err
 }
