@@ -125,3 +125,18 @@ func (r *IntReply) WriteTo(w io.Writer) (int64, error) {
 	n, err := w.Write([]byte(":" + strconv.FormatInt(r.Nos, 10) + "\r\n"))
 	return int64(n), err
 }
+
+type BulkReply struct {
+	Exist bool
+	Bulk  string
+}
+
+func (r *BulkReply) WriteTo(w io.Writer) (int64, error) {
+	if r.Exist {
+		n, err := w.Write([]byte(fmt.Sprintf("$%d\r\n%s\r\n", len(r.Bulk), r.Bulk)))
+		return int64(n), err
+	} else {
+		n, err := w.Write([]byte("$-1\r\n"))
+		return int64(n), err
+	}
+}
