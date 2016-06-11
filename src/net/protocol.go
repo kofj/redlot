@@ -106,3 +106,12 @@ func (r *StatusReply) WriteTo(w io.Writer) (int64, error) {
 	n, err := w.Write([]byte("+" + r.Code + "\r\n"))
 	return int64(n), err
 }
+
+type ErrReply struct {
+	Msg string
+}
+
+func (r *ErrReply) WriteTo(w io.Writer) (int64, error) {
+	n, err := w.Write([]byte("-ERR " + r.Msg + "\r\n"))
+	return int64(n), err
+}
