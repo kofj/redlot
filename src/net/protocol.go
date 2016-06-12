@@ -140,3 +140,30 @@ func (r *BulkReply) WriteTo(w io.Writer) (int64, error) {
 		return int64(n), err
 	}
 }
+
+type ListReply struct {
+	Nil  bool
+	List []interface{}
+}
+
+func (r ListReply) WriteTo(w io.Writer) (int64, error) {
+	if r.Nil {
+		n, err := w.Write([]byte("*-1"))
+		return int64(n), err
+	}
+	if len(r.List) == 0 {
+		n, err := w.Write([]byte("*0"))
+		return int64(n), err
+	}
+
+	body := "*" + strconv.Itoa(len(r.List)) + "\r\n"
+	for _, li := range r.List {
+		if li == nil {
+			body += "$-1\r\n"
+			continue
+		}
+		body += "$" + strconv.Itoa(len(li.(string))) + "\r\n" + li.(string) + "\r\n"
+	}
+	n, err := w.Write([]byte(body))
+	return int64(n), err
+}
