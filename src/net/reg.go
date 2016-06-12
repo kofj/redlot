@@ -1,7 +1,5 @@
 package net
 
-import "errors"
-
 type CmdFunc func([][]byte) ([][]byte, error)
 type REPLY_TYPE uint8
 
@@ -21,14 +19,6 @@ var (
 func REG(cmd string, types REPLY_TYPE, f CmdFunc) {
 	cmdFuncs[cmd] = f
 	replyType[cmd] = types
-}
-
-func RUN0(cmd string, args [][]byte) ([][]byte, error) {
-	f, ok := cmdFuncs[cmd]
-	if !ok {
-		return nil, errors.New("unknwon command '" + cmd + "'")
-	}
-	return f(args)
 }
 
 func RUN(cmd string, args [][]byte) (reply Reply) {
