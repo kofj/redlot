@@ -5,6 +5,8 @@ import (
 	"log"
 	"net"
 	"sync"
+
+	"../redlot"
 )
 
 var info struct {
@@ -16,6 +18,10 @@ var info struct {
 
 func init() {
 	REG("INFO", STATUS_REPLY, Info)
+	REG("GET", BULK_REPLY, redlot.Get)
+	REG("SET", STATUS_REPLY, redlot.Set)
+	REG("DEL", STATUS_REPLY, redlot.Del)
+	REG("EXISTS", INT_REPLY, redlot.Exists)
 }
 
 func Serve(addr string) {
