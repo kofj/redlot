@@ -64,6 +64,9 @@ func RUN(cmd string, args [][]byte) (reply Reply) {
 		break
 
 	case BULK_REPLY:
+		reply = &BulkReply{
+			Bulk: data.(string),
+		}
 		break
 
 	case LIST_REPLY:
