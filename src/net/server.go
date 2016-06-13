@@ -24,7 +24,9 @@ func init() {
 	REG("EXISTS", INT_REPLY, redlot.Exists)
 }
 
-func Serve(addr string) {
+func Serve(addr string, options *redlot.Options) {
+	redlot.Open(options)
+
 	l, err := net.Listen("tcp4", addr)
 	if err != nil {
 		log.Fatalf("Listen error: %v\n", err.Error())
