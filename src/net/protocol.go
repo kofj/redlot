@@ -127,18 +127,17 @@ func (r *IntReply) WriteTo(w io.Writer) (int64, error) {
 }
 
 type BulkReply struct {
-	Exist bool
-	Bulk  string
+	Nil  bool
+	Bulk string
 }
 
 func (r *BulkReply) WriteTo(w io.Writer) (int64, error) {
-	if r.Exist {
-		n, err := w.Write([]byte("$" + strconv.Itoa(len(r.Bulk)) + "\r\n" + r.Bulk + "\r\n"))
-		return int64(n), err
-	} else {
+	if r.Nil {
 		n, err := w.Write([]byte("$-1\r\n"))
 		return int64(n), err
 	}
+	n, err := w.Write([]byte("$" + strconv.Itoa(len(r.Bulk)) + "\r\n" + r.Bulk + "\r\n"))
+	return int64(n), err
 }
 
 type ListReply struct {
