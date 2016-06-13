@@ -58,6 +58,9 @@ func RUN(cmd string, args [][]byte) (reply Reply) {
 		}
 		break
 	case INT_REPLY:
+		reply = &IntReply{
+			Nos: data.(int64),
+		}
 		break
 
 	case BULK_REPLY:
