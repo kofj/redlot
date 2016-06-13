@@ -1,6 +1,6 @@
 package net
 
-type CmdFunc func([][]byte) ([][]byte, error)
+type CmdFunc func([][]byte) (interface{}, error)
 type REPLY_TYPE uint8
 
 const (
@@ -47,8 +47,14 @@ func RUN(cmd string, args [][]byte) (reply Reply) {
 
 	switch t {
 	case STATUS_REPLY:
-		reply = &StatusReply{
-			Code: string(data[0]),
+		if data == nil {
+			reply = &StatusReply{
+				Code: "OK",
+			}
+		} else {
+			reply = &StatusReply{
+				Code: (data.(string)),
+			}
 		}
 		break
 	case INT_REPLY:
