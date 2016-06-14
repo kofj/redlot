@@ -17,16 +17,23 @@ var info struct {
 }
 
 func init() {
+	// Register commands.
+	// system info
 	REG("INFO", STATUS_REPLY, Info)
+
+	// KV type
 	REG("GET", BULK_REPLY, redlot.Get)
 	REG("SET", STATUS_REPLY, redlot.Set)
 	REG("DEL", STATUS_REPLY, redlot.Del)
 	REG("EXISTS", INT_REPLY, redlot.Exists)
+
 }
 
 func Serve(addr string, options *redlot.Options) {
+	// Open LevelDB with options.
 	redlot.Open(options)
 
+	// Create sockets listener.
 	l, err := net.Listen("tcp4", addr)
 	if err != nil {
 		log.Fatalf("Listen error: %v\n", err.Error())

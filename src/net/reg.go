@@ -16,11 +16,13 @@ var (
 	replyType = map[string]REPLY_TYPE{}
 )
 
+// Register cmd function to server.
 func REG(cmd string, types REPLY_TYPE, f CmdFunc) {
 	cmdFuncs[cmd] = f
 	replyType[cmd] = types
 }
 
+// Execute cmd function and generate reply.
 func RUN(cmd string, args [][]byte) (reply Reply) {
 	f, ok := cmdFuncs[cmd]
 	if !ok {

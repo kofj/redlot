@@ -13,6 +13,7 @@ type Options struct {
 	CompactionBackoff bool
 }
 
+// convert redlot options to goleveldb options.
 func (c *Options) convert() *opt.Options {
 	return &opt.Options{
 		BlockCacheCapacity:       c.CacheSize * opt.MiB,

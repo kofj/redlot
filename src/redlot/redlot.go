@@ -11,6 +11,7 @@ var (
 	db *leveldb.DB
 )
 
+// Open LevelDB.
 func Open(o *Options) {
 	o.DataPath = filepath.Clean(o.DataPath)
 	if !filepath.IsAbs(o.DataPath) {
@@ -25,6 +26,7 @@ func Open(o *Options) {
 	}
 }
 
+// Close LevelDB
 func Close() {
 	db.Close()
 }
