@@ -142,7 +142,7 @@ func (r *BulkReply) WriteTo(w io.Writer) (int64, error) {
 
 type ListReply struct {
 	Nil  bool
-	List []interface{}
+	List []string
 }
 
 func (r ListReply) WriteTo(w io.Writer) (int64, error) {
@@ -157,11 +157,11 @@ func (r ListReply) WriteTo(w io.Writer) (int64, error) {
 
 	body := "*" + strconv.Itoa(len(r.List)) + "\r\n"
 	for _, li := range r.List {
-		if li == nil {
+		if li == "" {
 			body += "$-1\r\n"
 			continue
 		}
-		body += "$" + strconv.Itoa(len(li.(string))) + "\r\n" + li.(string) + "\r\n"
+		body += "$" + strconv.Itoa(len(li)) + "\r\n" + li + "\r\n"
 	}
 	n, err := w.Write([]byte(body))
 	return int64(n), err
