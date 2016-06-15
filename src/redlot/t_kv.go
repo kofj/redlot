@@ -5,7 +5,7 @@ import "fmt"
 func encode_kv_key(key []byte) (buf []byte) {
 	buf = append(buf, TYPE_KV)
 	buf = append(buf, key...)
-	buf = append(buf, Uint32ToBytes(uint32(len(key)))...)
+	buf = append(buf, uint32ToBytes(uint32(len(key)))...)
 	return
 }
 
