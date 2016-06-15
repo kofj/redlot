@@ -5,6 +5,7 @@ import (
 	"github.com/syndtr/goleveldb/leveldb/opt"
 )
 
+// Options of redlot
 type Options struct {
 	DataPath          string
 	CacheSize         int
