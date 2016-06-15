@@ -3,6 +3,7 @@ package redlot
 import (
 	"errors"
 	"fmt"
+	"time"
 )
 
 func encode_kv_key(key []byte) (buf []byte) {
@@ -55,4 +56,40 @@ func Exists(args [][]byte) (interface{}, error) {
 		return int64(1), err
 	}
 	return int64(0), err
+}
+
+func Setx(args [][]byte) (interface{}, error) {
+	if len(args) < 3 {
+		return nil, ERR_NOS_ARGS
+	}
+
+	key := encode_kv_key(args[0])
+
+	ttl := strToInt64(string(args[2]))
+	if ttl < 1 {
+		return nil, errors.New("TTL must > 0, you set to " + string(args[2]))
+	}
+	bs := uint64ToBytes(uint64(time.Now().UTC().Unix() + ttl))
+	meta.Put(key, bs, nil)
+
+	return nil, db.Put(key, args[1], nil)
+}
+
+func Ttl(args [][]byte) (interface{}, error) {
+	if len(args) < 1 {
+		return int64(-1), ERR_NOS_ARGS
+	}
+
+	key := encode_kv_key(args[0])
+	b, _ := meta.Get(key, nil)
+	if len(b) < 1 {
+		return int64(-1), nil
+	}
+	ttl := int64(bytesToUint64(b)) - time.Now().UTC().Unix()
+	if ttl < 0 {
+		ttl = -1
+		meta.Delete(key, nil)
+		db.Delete(key, nil)
+	}
+	return ttl, nil
 }
