@@ -9,7 +9,6 @@ import (
 func encode_kv_key(key []byte) (buf []byte) {
 	buf = append(buf, TYPE_KV)
 	buf = append(buf, key...)
-	buf = append(buf, uint32ToBytes(uint32(len(key)))...)
 	return
 }
 
@@ -17,7 +16,7 @@ func decode_kv_key(buf []byte) (key []byte) {
 	if len(buf) < 4 {
 		return nil
 	}
-	return buf[1 : len(buf)-3]
+	return buf[1:]
 }
 
 func Get(args [][]byte) (interface{}, error) {
