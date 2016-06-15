@@ -3,9 +3,9 @@ package redlot
 import "errors"
 
 const (
-	TYPE_KV = 'k'
+	typeKV = 'k'
 )
 
 var (
-	ERR_NOS_ARGS = errors.New("wrong number of arguments")
+	errNosArgs = errors.New("wrong number of arguments")
 )
