@@ -30,6 +30,8 @@ func init() {
 	REG("SETEX", STATUS_REPLY, redlot.Setx) // Alias of SETX
 	REG("TTL", INT_REPLY, redlot.Ttl)
 	REG("EXPIRE", INT_REPLY, redlot.Expire)
+	REGL("KEYS", LIST_REPLY, redlot.Keys)
+	REGL("SCAN", LIST_REPLY, redlot.Scan)
 
 }
 
