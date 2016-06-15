@@ -3,7 +3,10 @@ package redlot
 import (
 	"errors"
 	"fmt"
+	"strconv"
 	"time"
+
+	"github.com/syndtr/goleveldb/leveldb/util"
 )
 
 func encode_kv_key(key []byte) (buf []byte) {
@@ -111,4 +114,28 @@ func Ttl(args [][]byte) (interface{}, error) {
 		db.Delete(key, nil)
 	}
 	return ttl, nil
+}
+
+func Keys(args [][]byte) ([]string, error) {
+	if len(args) < 3 {
+		return []string{}, ERR_NOS_ARGS
+	}
+
+	ks := encode_kv_key(args[0])
+	ke := encode_kv_key(args[1])
+	limit, _ := strconv.Atoi(string(args[2]))
+
+	var keys []string
+	iter := db.NewIterator(&util.Range{Start: ks, Limit: ke}, nil)
+	for iter.Next() {
+		k := decode_kv_key(iter.Key())
+		keys = append(keys, string(k))
+		limit--
+		if limit == 0 {
+			break
+		}
+	}
+	iter.Release()
+	err := iter.Error()
+	return keys, err
 }
