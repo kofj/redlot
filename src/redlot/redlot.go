@@ -8,7 +8,10 @@ import (
 )
 
 var (
-	db *leveldb.DB
+	db       *leveldb.DB
+	meta     *leveldb.DB
+	metaPath string
+	dataPath string
 )
 
 // Open LevelDB.
@@ -17,10 +20,16 @@ func Open(o *Options) {
 	if !filepath.IsAbs(o.DataPath) {
 		log.Fatalf("[%s] not Abs path.", o.DataPath)
 	}
+	metaPath = filepath.Join(o.DataPath, "meta")
+	dataPath = filepath.Join(o.DataPath, "data")
 	opts := o.convert()
 
 	var err error
-	db, err = leveldb.OpenFile(o.DataPath, opts)
+	meta, err = leveldb.OpenFile(metaPath, opts)
+	if err != nil {
+		log.Fatalln("open meta db error:", err.Error())
+	}
+	db, err = leveldb.OpenFile(dataPath, opts)
 	if err != nil {
 		log.Fatalln("open db error:", err.Error())
 	}
