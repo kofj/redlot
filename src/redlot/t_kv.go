@@ -58,6 +58,26 @@ func Exists(args [][]byte) (interface{}, error) {
 	return int64(0), err
 }
 
+func Expire(args [][]byte) (interface{}, error) {
+	if len(args) < 2 {
+		return nil, ERR_NOS_ARGS
+	}
+
+	key := encode_kv_key(args[0])
+	has, _ := db.Has(key, nil)
+	if has {
+		ttl := strToInt64(string(args[1]))
+		if ttl < 1 {
+			return nil, errors.New("TTL must > 0, you set to " + string(args[1]))
+		}
+		bs := uint64ToBytes(uint64(time.Now().UTC().Unix() + ttl))
+		if meta.Put(key, bs, nil) == nil {
+			return int64(1), nil
+		}
+	}
+	return int64(0), nil
+}
+
 func Setx(args [][]byte) (interface{}, error) {
 	if len(args) < 3 {
 		return nil, ERR_NOS_ARGS
