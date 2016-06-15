@@ -33,6 +33,9 @@ func Open(o *Options) {
 	if err != nil {
 		log.Fatalln("open db error:", err.Error())
 	}
+
+	// start garbage collector routine.
+	go gc()
 }
 
 // Close LevelDB
