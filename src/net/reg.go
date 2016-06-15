@@ -42,7 +42,7 @@ func RUN(cmd string, args [][]byte) (reply Reply) {
 
 	data, ferr := f(args)
 	if ferr != nil {
-		reply = &ErrReply{
+		return &ErrReply{
 			Msg: ferr.Error(),
 		}
 	}
