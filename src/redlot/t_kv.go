@@ -139,3 +139,28 @@ func Keys(args [][]byte) ([]string, error) {
 	err := iter.Error()
 	return keys, err
 }
+
+func Scan(args [][]byte) ([]string, error) {
+	if len(args) < 3 {
+		return []string{}, ERR_NOS_ARGS
+	}
+
+	ks := encode_kv_key(args[0])
+	ke := encode_kv_key(args[1])
+	limit, _ := strconv.Atoi(string(args[2]))
+
+	var ret []string
+	iter := db.NewIterator(&util.Range{Start: ks, Limit: ke}, nil)
+	for iter.Next() {
+		k := decode_kv_key(iter.Key())
+		ret = append(ret, string(k))
+		ret = append(ret, string(iter.Value()))
+		limit--
+		if limit == 0 {
+			break
+		}
+	}
+	iter.Release()
+	err := iter.Error()
+	return ret, err
+}
