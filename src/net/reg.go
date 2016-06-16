@@ -16,13 +16,13 @@ const (
 var (
 	cmdFuncs     = map[string]cmdFunc{}
 	listCmdFuncs = map[string]listCmdFunc{}
-	replyType    = map[string]replyType{}
+	replyTypes   = map[string]replyType{}
 )
 
 // REG will register a cmd function to server.
 func REG(cmd string, types replyType, f cmdFunc) {
 	cmdFuncs[cmd] = f
-	replyType[cmd] = types
+	replyTypes[cmd] = types
 }
 
 // REGL will regiter a list cmd function to server.
@@ -53,7 +53,7 @@ func run(cmd string, args [][]byte) (r reply) {
 		}
 	}
 
-	t, ok2 := replyType[cmd]
+	t, ok2 := replyTypes[cmd]
 	if !ok2 {
 		r = &errReply{
 			Msg: "unknwon reply type of command '" + cmd + "'",
@@ -97,5 +97,5 @@ func run(cmd string, args [][]byte) (r reply) {
 		// 	break
 	}
 
-	r.WriteTo(c)
+	return r
 }
