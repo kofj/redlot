@@ -196,3 +196,9 @@ func scan(args [][]byte, reverse bool) ([]string, error) {
 func Scan(args [][]byte) ([]string, error) {
 	return scan(args, false)
 }
+
+// Rscan will reverse list KV pair that keys in the range.
+// Args: start_key string, end_key string, limit_number int
+func Rscan(args [][]byte) ([]string, error) {
+	return scan(args, true)
+}
