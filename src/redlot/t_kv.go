@@ -238,3 +238,16 @@ func MultiGet(args [][]byte) (r []string, err error) {
 	}
 	return
 }
+
+// MultiSet wil batch write data to db.
+func MultiSet(args [][]byte) (interface{}, error) {
+	if len(args) < 2 || len(args)%2 == 1 {
+		return []string{}, errNosArgs
+	}
+
+	batch := new(leveldb.Batch)
+	for i := 0; i < len(args); i += 2 {
+		batch.Put(encodeKvKey(args[i]), args[i+1])
+	}
+	return nil, db.Write(batch, nil)
+}
