@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/util"
 )
 
@@ -201,4 +202,17 @@ func Scan(args [][]byte) ([]string, error) {
 // Args: start_key string, end_key string, limit_number int
 func Rscan(args [][]byte) ([]string, error) {
 	return scan(args, true)
+}
+
+// MultiGet wil batch read data from db.
+func MultiGet(args [][]byte) (r []string, err error) {
+	if len(args) < 1 {
+		return []string{}, errNosArgs
+	}
+	for _, key := range args {
+		v, _ := db.Get(encodeKvKey(key), nil)
+		r = append(r, string(key))
+		r = append(r, string(v))
+	}
+	return
 }
