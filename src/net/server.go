@@ -28,7 +28,7 @@ func init() {
 	REG("EXISTS", INT_REPLY, redlot.Exists)
 	REG("SETX", STATUS_REPLY, redlot.Setx)
 	REG("SETEX", STATUS_REPLY, redlot.Setx) // Alias of SETX
-	REG("TTL", INT_REPLY, redlot.Ttl)
+	REG("TTL", INT_REPLY, redlot.TTL)
 	REG("EXPIRE", INT_REPLY, redlot.Expire)
 	REGL("KEYS", LIST_REPLY, redlot.Keys)
 	REGL("SCAN", LIST_REPLY, redlot.Scan)

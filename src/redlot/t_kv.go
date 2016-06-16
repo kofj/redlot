@@ -97,7 +97,7 @@ func Setx(args [][]byte) (interface{}, error) {
 	return nil, db.Put(key, args[1], nil)
 }
 
-func Ttl(args [][]byte) (interface{}, error) {
+func TTL(args [][]byte) (interface{}, error) {
 	if len(args) < 1 {
 		return int64(-1), errNosArgs
 	}
