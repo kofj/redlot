@@ -169,6 +169,13 @@ func keys(args [][]byte, reverse bool) ([]string, error) {
 func Keys(args [][]byte) ([]string, error) {
 	return keys(args, false)
 }
+
+// Rkeys will reverse list keys in the range.
+// Args: start_key string, end_key string, limit_number int
+func Rkeys(args [][]byte) ([]string, error) {
+	return keys(args, true)
+}
+
 func scan(args [][]byte, reverse bool) ([]string, error) {
 	if len(args) < 3 {
 		return []string{}, errNosArgs
