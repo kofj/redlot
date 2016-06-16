@@ -9,13 +9,13 @@ import (
 	"github.com/syndtr/goleveldb/leveldb/util"
 )
 
-func encode_kv_key(key []byte) (buf []byte) {
+func encodeKvKey(key []byte) (buf []byte) {
 	buf = append(buf, typeKV)
 	buf = append(buf, key...)
 	return
 }
 
-func decode_kv_key(buf []byte) (key []byte) {
+func decodeKvKey(buf []byte) (key []byte) {
 	if len(buf) < 4 {
 		return nil
 	}
@@ -27,7 +27,7 @@ func Get(args [][]byte) (interface{}, error) {
 		return "", errNosArgs
 	}
 
-	v, err := db.Get(encode_kv_key(args[0]), nil)
+	v, err := db.Get(encodeKvKey(args[0]), nil)
 	return string(v), err
 }
 
@@ -37,7 +37,7 @@ func Set(args [][]byte) (interface{}, error) {
 	}
 
 	fmt.Printf("SET %s %s\n", args[0], args[1])
-	return nil, db.Put(encode_kv_key(args[0]), args[1], nil)
+	return nil, db.Put(encodeKvKey(args[0]), args[1], nil)
 }
 
 func Del(args [][]byte) (interface{}, error) {
@@ -45,7 +45,7 @@ func Del(args [][]byte) (interface{}, error) {
 		return nil, errNosArgs
 	}
 
-	return nil, db.Delete(encode_kv_key(args[0]), nil)
+	return nil, db.Delete(encodeKvKey(args[0]), nil)
 }
 
 func Exists(args [][]byte) (interface{}, error) {
@@ -53,7 +53,7 @@ func Exists(args [][]byte) (interface{}, error) {
 		return int64(-1), errNosArgs
 	}
 
-	ret, err := db.Has(encode_kv_key(args[0]), nil)
+	ret, err := db.Has(encodeKvKey(args[0]), nil)
 	if ret {
 		return int64(1), err
 	}
@@ -65,7 +65,7 @@ func Expire(args [][]byte) (interface{}, error) {
 		return nil, errNosArgs
 	}
 
-	key := encode_kv_key(args[0])
+	key := encodeKvKey(args[0])
 	has, _ := db.Has(key, nil)
 	if has {
 		ttl := strToInt64(string(args[1]))
@@ -85,7 +85,7 @@ func Setx(args [][]byte) (interface{}, error) {
 		return nil, errNosArgs
 	}
 
-	key := encode_kv_key(args[0])
+	key := encodeKvKey(args[0])
 
 	ttl := strToInt64(string(args[2]))
 	if ttl < 1 {
@@ -102,7 +102,7 @@ func Ttl(args [][]byte) (interface{}, error) {
 		return int64(-1), errNosArgs
 	}
 
-	key := encode_kv_key(args[0])
+	key := encodeKvKey(args[0])
 	b, _ := meta.Get(key, nil)
 	if len(b) < 1 {
 		return int64(-1), nil
@@ -121,14 +121,14 @@ func Keys(args [][]byte) ([]string, error) {
 		return []string{}, errNosArgs
 	}
 
-	ks := encode_kv_key(args[0])
-	ke := encode_kv_key(args[1])
+	ks := encodeKvKey(args[0])
+	ke := encodeKvKey(args[1])
 	limit, _ := strconv.Atoi(string(args[2]))
 
 	var keys []string
 	iter := db.NewIterator(&util.Range{Start: ks, Limit: ke}, nil)
 	for iter.Next() {
-		k := decode_kv_key(iter.Key())
+		k := decodeKvKey(iter.Key())
 		keys = append(keys, string(k))
 		limit--
 		if limit == 0 {
@@ -145,14 +145,14 @@ func Scan(args [][]byte) ([]string, error) {
 		return []string{}, errNosArgs
 	}
 
-	ks := encode_kv_key(args[0])
-	ke := encode_kv_key(args[1])
+	ks := encodeKvKey(args[0])
+	ke := encodeKvKey(args[1])
 	limit, _ := strconv.Atoi(string(args[2]))
 
 	var ret []string
 	iter := db.NewIterator(&util.Range{Start: ks, Limit: ke}, nil)
 	for iter.Next() {
-		k := decode_kv_key(iter.Key())
+		k := decodeKvKey(iter.Key())
 		ret = append(ret, string(k))
 		ret = append(ret, string(iter.Value()))
 		limit--
