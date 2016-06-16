@@ -22,6 +22,8 @@ func decodeKvKey(buf []byte) (key []byte) {
 	return buf[1:]
 }
 
+// Get a value by a key.
+// Args: key string
 func Get(args [][]byte) (interface{}, error) {
 	if len(args) < 1 {
 		return "", errNosArgs
@@ -31,6 +33,8 @@ func Get(args [][]byte) (interface{}, error) {
 	return string(v), err
 }
 
+// Set a value by a key.
+// Args: key string, value any
 func Set(args [][]byte) (interface{}, error) {
 	if len(args) < 2 {
 		return nil, errNosArgs
@@ -40,6 +44,8 @@ func Set(args [][]byte) (interface{}, error) {
 	return nil, db.Put(encodeKvKey(args[0]), args[1], nil)
 }
 
+// Del will delete a value by a key.
+// Args: key string
 func Del(args [][]byte) (interface{}, error) {
 	if len(args) < 1 {
 		return nil, errNosArgs
@@ -48,6 +54,8 @@ func Del(args [][]byte) (interface{}, error) {
 	return nil, db.Delete(encodeKvKey(args[0]), nil)
 }
 
+// Exists will check key is exists.
+// Args: key string
 func Exists(args [][]byte) (interface{}, error) {
 	if len(args) < 1 {
 		return int64(-1), errNosArgs
@@ -60,6 +68,8 @@ func Exists(args [][]byte) (interface{}, error) {
 	return int64(0), err
 }
 
+// Expire the key after timeout.
+// Args: key string, seconds int
 func Expire(args [][]byte) (interface{}, error) {
 	if len(args) < 2 {
 		return nil, errNosArgs
@@ -80,6 +90,8 @@ func Expire(args [][]byte) (interface{}, error) {
 	return int64(0), nil
 }
 
+// Setx will set a value by the key and expire it after timeout.
+// Args: key string, value any, seconds int
 func Setx(args [][]byte) (interface{}, error) {
 	if len(args) < 3 {
 		return nil, errNosArgs
@@ -97,6 +109,8 @@ func Setx(args [][]byte) (interface{}, error) {
 	return nil, db.Put(key, args[1], nil)
 }
 
+// TTL will return the lifetime of the key.
+// Args: key string
 func TTL(args [][]byte) (interface{}, error) {
 	if len(args) < 1 {
 		return int64(-1), errNosArgs
@@ -116,6 +130,8 @@ func TTL(args [][]byte) (interface{}, error) {
 	return ttl, nil
 }
 
+// Keys will list keys in the range.
+// Args: start_key string, end_key string, limit_number int
 func Keys(args [][]byte) ([]string, error) {
 	if len(args) < 3 {
 		return []string{}, errNosArgs
@@ -140,6 +156,8 @@ func Keys(args [][]byte) ([]string, error) {
 	return keys, err
 }
 
+// Scan will list KV pair that keys in the range.
+// Args: start_key string, end_key string, limit_number int
 func Scan(args [][]byte) ([]string, error) {
 	if len(args) < 3 {
 		return []string{}, errNosArgs
