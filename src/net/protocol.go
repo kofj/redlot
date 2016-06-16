@@ -10,13 +10,13 @@ import (
 	"io"
 )
 
-type Request struct {
+type request struct {
 	Cmd  string
 	Args [][]byte
 	Conn io.ReadCloser
 }
 
-func newRequset(conn io.ReadCloser) (*Request, error) {
+func newRequset(conn io.ReadCloser) (*request, error) {
 	reader := bufio.NewReader(conn)
 
 	// *<number of arguments>CRLF
@@ -28,7 +28,7 @@ func newRequset(conn io.ReadCloser) (*Request, error) {
 	var argCount int
 	if line[0] == '*' {
 		if _, err := fmt.Sscanf(line, "*%d\r\n", &argCount); err != nil {
-			return nil, Malformed("*<#Arguments>", line)
+			return nil, malformed("*<#Arguments>", line)
 		}
 
 		// $<number of bytes of argumnet 1>CRLF
@@ -45,7 +45,7 @@ func newRequset(conn io.ReadCloser) (*Request, error) {
 			}
 		}
 
-		return &Request{
+		return &request{
 			Cmd:  strings.ToUpper(string(command)),
 			Args: arguments,
 			Conn: conn,
@@ -58,12 +58,12 @@ func newRequset(conn io.ReadCloser) (*Request, error) {
 func readArgumnet(reader *bufio.Reader) ([]byte, error) {
 	line, err := reader.ReadString('\n')
 	if err != nil {
-		return nil, Malformed("$<ArgumentLenght>", line)
+		return nil, malformed("$<ArgumentLenght>", line)
 	}
 
 	var argLength int
 	if _, err := fmt.Sscanf(line, "$%d\r\n", &argLength); err != nil {
-		return nil, Malformed("$<ArgumentLength>", line)
+		return nil, malformed("$<ArgumentLength>", line)
 	}
 
 	data, err := ioutil.ReadAll(io.LimitReader(reader, int64(argLength)))
@@ -72,66 +72,66 @@ func readArgumnet(reader *bufio.Reader) ([]byte, error) {
 	}
 
 	if len(data) != argLength {
-		return nil, MalformedLength(argLength, len(data))
+		return nil, malformedLength(argLength, len(data))
 	}
 
 	if b, err := reader.ReadByte(); err != nil || b != '\r' {
-		return nil, MalformedMissingCRLF()
+		return nil, malformedMissingCRLF()
 	}
 	if b, err := reader.ReadByte(); err != nil || b != '\n' {
-		return nil, MalformedMissingCRLF()
+		return nil, malformedMissingCRLF()
 	}
 
 	return data, nil
 }
 
-func Malformed(expected string, got string) error {
+func malformed(expected string, got string) error {
 	return fmt.Errorf("Mailformed request: %s does not match %s", got, expected)
 }
 
-func MalformedLength(expected int, got int) error {
+func malformedLength(expected int, got int) error {
 	return fmt.Errorf("Mailformed request: argument length %d does not match %d", got, expected)
 }
 
-func MalformedMissingCRLF() error {
+func malformedMissingCRLF() error {
 	return fmt.Errorf("Mailformed request: line should end with CRLF")
 }
 
-type Reply io.WriterTo
+type reply io.WriterTo
 
-type StatusReply struct {
+type statusReply struct {
 	Code string
 }
 
-func (r *StatusReply) WriteTo(w io.Writer) (int64, error) {
+func (r *statusReply) WriteTo(w io.Writer) (int64, error) {
 	n, err := w.Write([]byte("+" + r.Code + "\r\n"))
 	return int64(n), err
 }
 
-type ErrReply struct {
+type errReply struct {
 	Msg string
 }
 
-func (r *ErrReply) WriteTo(w io.Writer) (int64, error) {
+func (r *errReply) WriteTo(w io.Writer) (int64, error) {
 	n, err := w.Write([]byte("-ERR " + r.Msg + "\r\n"))
 	return int64(n), err
 }
 
-type IntReply struct {
+type intReply struct {
 	Nos int64
 }
 
-func (r *IntReply) WriteTo(w io.Writer) (int64, error) {
+func (r *intReply) WriteTo(w io.Writer) (int64, error) {
 	n, err := w.Write([]byte(":" + strconv.FormatInt(r.Nos, 10) + "\r\n"))
 	return int64(n), err
 }
 
-type BulkReply struct {
+type bulkReply struct {
 	Nil  bool
 	Bulk string
 }
 
-func (r *BulkReply) WriteTo(w io.Writer) (int64, error) {
+func (r *bulkReply) WriteTo(w io.Writer) (int64, error) {
 	if r.Nil {
 		n, err := w.Write([]byte("$-1\r\n"))
 		return int64(n), err
@@ -140,12 +140,12 @@ func (r *BulkReply) WriteTo(w io.Writer) (int64, error) {
 	return int64(n), err
 }
 
-type ListReply struct {
+type listReply struct {
 	Nil  bool
 	List []string
 }
 
-func (r ListReply) WriteTo(w io.Writer) (int64, error) {
+func (r listReply) WriteTo(w io.Writer) (int64, error) {
 	if r.Nil {
 		n, err := w.Write([]byte("*-1"))
 		return int64(n), err

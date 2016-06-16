@@ -1,38 +1,41 @@
 package net
 
-type CmdFunc func([][]byte) (interface{}, error)
-type ListCmdFunc func([][]byte) ([]string, error)
-type REPLY_TYPE uint8
+type cmdFunc func([][]byte) (interface{}, error)
+type listCmdFunc func([][]byte) ([]string, error)
+type replyType uint8
 
 const (
-	STATUS_REPLY REPLY_TYPE = 1 + iota
-	ERR_REPLY
-	INT_REPLY
-	BULK_REPLY
-	LIST_REPLY
+	// StatusReply etc defined reply type.
+	StatusReply replyType = 1 + iota
+	ErrReply
+	IntReply
+	BulkReply
+	ListReply
 )
 
 var (
-	cmdFuncs     = map[string]CmdFunc{}
-	listCmdFuncs = map[string]ListCmdFunc{}
-	replyType    = map[string]REPLY_TYPE{}
+	cmdFuncs     = map[string]cmdFunc{}
+	listCmdFuncs = map[string]listCmdFunc{}
+	replyType    = map[string]replyType{}
 )
 
-// Register cmd function to server.
-func REG(cmd string, types REPLY_TYPE, f CmdFunc) {
+// REG will register a cmd function to server.
+func REG(cmd string, types replyType, f cmdFunc) {
 	cmdFuncs[cmd] = f
 	replyType[cmd] = types
 }
-func REGL(cmd string, types REPLY_TYPE, f ListCmdFunc) {
+
+// REGL will regiter a list cmd function to server.
+func REGL(cmd string, types replyType, f listCmdFunc) {
 	listCmdFuncs[cmd] = f
 }
 
 // Execute cmd function and generate reply.
-func RUN(cmd string, args [][]byte) (reply Reply) {
+func run(cmd string, args [][]byte) (r reply) {
 	f, ok := cmdFuncs[cmd]
 	fl, okl := listCmdFuncs[cmd]
 	if !ok && !okl {
-		reply = &ErrReply{
+		r = &errReply{
 			Msg: "unknwon command '" + cmd + "'",
 		}
 		return
@@ -41,18 +44,18 @@ func RUN(cmd string, args [][]byte) (reply Reply) {
 		data, ferr := fl(args)
 
 		if ferr != nil {
-			return &ErrReply{
+			return &errReply{
 				Msg: ferr.Error(),
 			}
 		}
-		return &ListReply{
+		return &listReply{
 			List: data,
 		}
 	}
 
 	t, ok2 := replyType[cmd]
 	if !ok2 {
-		reply = &ErrReply{
+		r = &errReply{
 			Msg: "unknwon reply type of command '" + cmd + "'",
 		}
 		return
@@ -61,38 +64,38 @@ func RUN(cmd string, args [][]byte) (reply Reply) {
 	data, ferr := f(args)
 
 	if ferr != nil {
-		return &ErrReply{
+		return &errReply{
 			Msg: ferr.Error(),
 		}
 	}
 
 	switch t {
-	case STATUS_REPLY:
+	case StatusReply:
 		if data == nil {
-			reply = &StatusReply{
+			r = &statusReply{
 				Code: "OK",
 			}
 		} else {
-			reply = &StatusReply{
+			r = &statusReply{
 				Code: (data.(string)),
 			}
 		}
 		break
-	case INT_REPLY:
-		reply = &IntReply{
+	case IntReply:
+		r = &intReply{
 			Nos: data.(int64),
 		}
 		break
 
-	case BULK_REPLY:
-		reply = &BulkReply{
+	case BulkReply:
+		r = &bulkReply{
 			Bulk: data.(string),
 		}
 		break
 
-		// case LIST_REPLY:
+		// case ListReply:
 		// 	break
 	}
 
-	return
+	r.WriteTo(c)
 }

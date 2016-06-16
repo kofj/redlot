@@ -9,29 +9,28 @@ import (
 	"../redlot"
 )
 
-var info struct {
+var counter struct {
 	sync.RWMutex
 	ConnCounter uint64
 	TotalCalls  uint64
-	reply       Reply
 }
 
 func init() {
 	// Register commands.
 	// system info
-	REG("INFO", STATUS_REPLY, Info)
+	REG("INFO", StatusReply, info)
 
 	// KV type
-	REG("GET", BULK_REPLY, redlot.Get)
-	REG("SET", STATUS_REPLY, redlot.Set)
-	REG("DEL", STATUS_REPLY, redlot.Del)
-	REG("EXISTS", INT_REPLY, redlot.Exists)
-	REG("SETX", STATUS_REPLY, redlot.Setx)
-	REG("SETEX", STATUS_REPLY, redlot.Setx) // Alias of SETX
-	REG("TTL", INT_REPLY, redlot.TTL)
-	REG("EXPIRE", INT_REPLY, redlot.Expire)
-	REGL("KEYS", LIST_REPLY, redlot.Keys)
-	REGL("SCAN", LIST_REPLY, redlot.Scan)
+	REG("GET", BulkReply, redlot.Get)
+	REG("SET", StatusReply, redlot.Set)
+	REG("DEL", StatusReply, redlot.Del)
+	REG("EXISTS", IntReply, redlot.Exists)
+	REG("SETX", StatusReply, redlot.Setx)
+	REG("SETEX", StatusReply, redlot.Setx) // Alias of SETX
+	REG("TTL", IntReply, redlot.TTL)
+	REG("EXPIRE", IntReply, redlot.Expire)
+	REGL("KEYS", ListReply, redlot.Keys)
+	REGL("SCAN", ListReply, redlot.Scan)
 
 }
 
@@ -53,9 +52,9 @@ func Serve(addr string, options *redlot.Options) {
 		}
 
 		// Count connecion
-		info.Lock()
-		info.ConnCounter++
-		info.Unlock()
+		counter.Lock()
+		counter.ConnCounter++
+		counter.Unlock()
 
 		go func(c net.Conn) {
 			for {
@@ -67,18 +66,18 @@ func Serve(addr string, options *redlot.Options) {
 					continue
 				}
 
-				info.Lock()
-				info.TotalCalls++
-				info.Unlock()
+				counter.Lock()
+				counter.TotalCalls++
+				counter.Unlock()
 
-				reply := RUN(req.Cmd, req.Args)
-				reply.WriteTo(c)
+				r := run(req.Cmd, req.Args)
+				r.WriteTo(c)
 			}
 
 			c.Close()
-			info.Lock()
-			info.ConnCounter--
-			info.Unlock()
+			counter.Lock()
+			counter.ConnCounter--
+			counter.Unlock()
 
 		}(conn)
 
