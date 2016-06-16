@@ -128,9 +128,7 @@ func TTL(args [][]byte) (interface{}, error) {
 	return ttl, nil
 }
 
-// Keys will list keys in the range.
-// Args: start_key string, end_key string, limit_number int
-func Keys(args [][]byte) ([]string, error) {
+func keys(args [][]byte, reverse bool) ([]string, error) {
 	if len(args) < 3 {
 		return []string{}, errNosArgs
 	}
@@ -141,12 +139,24 @@ func Keys(args [][]byte) ([]string, error) {
 
 	var keys []string
 	iter := db.NewIterator(&util.Range{Start: ks, Limit: ke}, nil)
-	for iter.Next() {
-		k := decodeKvKey(iter.Key())
-		keys = append(keys, string(k))
-		limit--
-		if limit == 0 {
-			break
+	if reverse {
+		iter.Seek(ke)
+		for iter.Prev() {
+			k := decodeKvKey(iter.Key())
+			keys = append(keys, string(k))
+			limit--
+			if limit == 0 {
+				break
+			}
+		}
+	} else {
+		for iter.Next() {
+			k := decodeKvKey(iter.Key())
+			keys = append(keys, string(k))
+			limit--
+			if limit == 0 {
+				break
+			}
 		}
 	}
 	iter.Release()
@@ -154,6 +164,11 @@ func Keys(args [][]byte) ([]string, error) {
 	return keys, err
 }
 
+// Keys will list keys in the range.
+// Args: start_key string, end_key string, limit_number int
+func Keys(args [][]byte) ([]string, error) {
+	return keys(args, false)
+}
 func scan(args [][]byte, reverse bool) ([]string, error) {
 	if len(args) < 3 {
 		return []string{}, errNosArgs
