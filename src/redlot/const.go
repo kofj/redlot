@@ -3,7 +3,9 @@ package redlot
 import "errors"
 
 const (
-	typeKV = 'k'
+	typeKV    = 'k'
+	typeHASH  = 'h'
+	typeHSIZE = 'H'
 )
 
 var (
