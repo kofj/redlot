@@ -31,6 +31,7 @@ func init() {
 	REG("EXPIRE", IntReply, redlot.Expire)
 	REGL("KEYS", ListReply, redlot.Keys)
 	REGL("SCAN", ListReply, redlot.Scan)
+	REGL("RSCAN", ListReply, redlot.Rscan)
 
 }
 
