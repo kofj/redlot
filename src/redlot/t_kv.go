@@ -16,8 +16,8 @@ func encodeKvKey(key []byte) (buf []byte) {
 }
 
 func decodeKvKey(buf []byte) (key []byte) {
-	if len(buf) < 4 {
-		return nil
+	if len(buf) < 2 {
+		return []byte{}
 	}
 	return buf[1:]
 }
