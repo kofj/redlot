@@ -2,7 +2,6 @@ package redlot
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 	"time"
 
@@ -40,7 +39,7 @@ func Set(args [][]byte) (interface{}, error) {
 		return nil, errNosArgs
 	}
 
-	fmt.Printf("SET %s %s\n", args[0], args[1])
+	// fmt.Printf("SET %s %s\n", args[0], args[1])
 	return nil, db.Put(encodeKvKey(args[0]), args[1], nil)
 }
 
@@ -50,7 +49,6 @@ func Del(args [][]byte) (interface{}, error) {
 	if len(args) < 1 {
 		return nil, errNosArgs
 	}
-
 	return nil, db.Delete(encodeKvKey(args[0]), nil)
 }
 
@@ -96,7 +94,6 @@ func Setx(args [][]byte) (interface{}, error) {
 	if len(args) < 3 {
 		return nil, errNosArgs
 	}
-
 	key := encodeKvKey(args[0])
 
 	ttl := strToInt64(string(args[2]))
