@@ -153,9 +153,7 @@ func Keys(args [][]byte) ([]string, error) {
 	return keys, err
 }
 
-// Scan will list KV pair that keys in the range.
-// Args: start_key string, end_key string, limit_number int
-func Scan(args [][]byte) ([]string, error) {
+func scan(args [][]byte, reverse bool) ([]string, error) {
 	if len(args) < 3 {
 		return []string{}, errNosArgs
 	}
@@ -166,16 +164,35 @@ func Scan(args [][]byte) ([]string, error) {
 
 	var ret []string
 	iter := db.NewIterator(&util.Range{Start: ks, Limit: ke}, nil)
-	for iter.Next() {
-		k := decodeKvKey(iter.Key())
-		ret = append(ret, string(k))
-		ret = append(ret, string(iter.Value()))
-		limit--
-		if limit == 0 {
-			break
+	if reverse {
+		iter.Seek(ke)
+		for iter.Prev() {
+			k := decodeKvKey(iter.Key())
+			ret = append(ret, string(k))
+			ret = append(ret, string(iter.Value()))
+			limit--
+			if limit == 0 {
+				break
+			}
+		}
+	} else {
+		for iter.Next() {
+			k := decodeKvKey(iter.Key())
+			ret = append(ret, string(k))
+			ret = append(ret, string(iter.Value()))
+			limit--
+			if limit == 0 {
+				break
+			}
 		}
 	}
 	iter.Release()
 	err := iter.Error()
 	return ret, err
+}
+
+// Scan will list KV pair that keys in the range.
+// Args: start_key string, end_key string, limit_number int
+func Scan(args [][]byte) ([]string, error) {
+	return scan(args, false)
 }
