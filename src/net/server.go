@@ -30,6 +30,7 @@ func init() {
 	REG("TTL", IntReply, redlot.TTL)
 	REG("EXPIRE", IntReply, redlot.Expire)
 	REGL("KEYS", ListReply, redlot.Keys)
+	REGL("RKEYS", ListReply, redlot.Rkeys)
 	REGL("SCAN", ListReply, redlot.Scan)
 	REGL("RSCAN", ListReply, redlot.Rscan)
 	REGL("MULTI_GET", ListReply, redlot.MultiGet)
