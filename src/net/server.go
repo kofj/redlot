@@ -34,6 +34,7 @@ func init() {
 	REGL("SCAN", ListReply, redlot.Scan)
 	REGL("RSCAN", ListReply, redlot.Rscan)
 	REGL("MULTI_GET", ListReply, redlot.MultiGet)
+	REG("MULTI_SET", StatusReply, redlot.MultiSet)
 }
 
 func Serve(addr string, options *redlot.Options) {
