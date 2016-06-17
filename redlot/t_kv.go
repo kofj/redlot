@@ -294,3 +294,16 @@ func MultiSet(args [][]byte) (interface{}, error) {
 	}
 	return nil, db.Write(batch, nil)
 }
+
+// MultiDel wil batch delete value by keys.
+func MultiDel(args [][]byte) (interface{}, error) {
+	if len(args) < 1 {
+		return []string{}, errNosArgs
+	}
+
+	batch := new(leveldb.Batch)
+	for _, key := range args {
+		batch.Delete(encodeKvKey(key))
+	}
+	return nil, db.Write(batch, nil)
+}
