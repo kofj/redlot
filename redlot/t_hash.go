@@ -27,6 +27,21 @@ func decodeHsizeKey(b []byte) (key []byte) {
 	return b[5:]
 }
 
+func hashSizeIncr(name, key []byte) {
+	hsize := encodeHsizeKey(name)
+	hash := encodeHashKey(name, key)
+
+	var size uint32
+	if b, err := db.Get(hsize, nil); err == nil {
+		size = bytesToUint32(b)
+	}
+
+	if exists, _ := db.Has(hash, nil); !exists {
+		size++
+		db.Put(hsize, uint32ToBytes(size), nil)
+	}
+}
+
 // Hset will set a hashmap value by the key.
 // Args: name string, key string, value any
 func Hset(args [][]byte) (r interface{}, err error) {
