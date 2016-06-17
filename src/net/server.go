@@ -23,6 +23,7 @@ func init() {
 	// KV type
 	REG("GET", BulkReply, redlot.Get)
 	REG("SET", StatusReply, redlot.Set)
+	REG("INCR", IntReply, redlot.Incr)
 	REG("DEL", StatusReply, redlot.Del)
 	REG("EXISTS", IntReply, redlot.Exists)
 	REG("SETX", StatusReply, redlot.Setx)
