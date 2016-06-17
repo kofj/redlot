@@ -44,6 +44,27 @@ func Set(args [][]byte) (interface{}, error) {
 	return nil, db.Put(encodeKvKey(args[0]), args[1], nil)
 }
 
+// Incr 1.
+// Args: key string
+func Incr(args [][]byte) (interface{}, error) {
+	if len(args) < 1 {
+		return nil, errNosArgs
+	}
+
+	key := encodeKvKey(args[0])
+	v, _ := db.Get(key, nil)
+	var number int
+	if len(v) != 0 {
+		var err error
+		number, err = strconv.Atoi(string(v))
+		if err != nil {
+			return nil, errNotInt
+		}
+	}
+	number++
+	return int64(number), db.Put(key, []byte(strconv.Itoa(number)), nil)
+}
+
 // Del will delete a value by a key.
 // Args: key string
 func Del(args [][]byte) (interface{}, error) {
