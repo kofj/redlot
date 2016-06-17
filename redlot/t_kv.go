@@ -154,8 +154,19 @@ func keys(args [][]byte, reverse bool) ([]string, error) {
 		return []string{}, errNosArgs
 	}
 
-	ks := encodeKvKey(args[0])
-	ke := encodeKvKey(args[1])
+	var ks, ke []byte
+	if len(args[0]) == 0 {
+		ks = []byte{0x6b, 0x00}
+	} else {
+		ks = encodeKvKey(args[0])
+	}
+
+	if len(args[1]) == 0 {
+		ke = []byte{0x6b, 0xff}
+	} else {
+		ke = encodeKvKey(args[1])
+	}
+
 	limit, _ := strconv.Atoi(string(args[2]))
 
 	var keys []string
@@ -202,8 +213,19 @@ func scan(args [][]byte, reverse bool) ([]string, error) {
 		return []string{}, errNosArgs
 	}
 
-	ks := encodeKvKey(args[0])
-	ke := encodeKvKey(args[1])
+	var ks, ke []byte
+	if len(args[0]) == 0 {
+		ks = []byte{0x6b, 0x00}
+	} else {
+		ks = encodeKvKey(args[0])
+	}
+
+	if len(args[1]) == 0 {
+		ke = []byte{0x6b, 0xff}
+	} else {
+		ke = encodeKvKey(args[1])
+	}
+
 	limit, _ := strconv.Atoi(string(args[2]))
 
 	var ret []string
