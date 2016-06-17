@@ -44,3 +44,65 @@ func TestDecodeHsizeKey(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestHashFuncsArgs(t *testing.T) {
+	zeroByte := make([][]byte, 0)
+	oneByte := make([][]byte, 1)
+	twoBytes := make([][]byte, 2)
+	threeBytes := make([][]byte, 3)
+	// fourByte := make([][]byte, 4)
+
+	// one args methods
+	if _, e := Hsize(zeroByte); e != errNosArgs {
+		t.Fail()
+	}
+	if _, e := Hgetall(zeroByte); e != errNosArgs {
+		t.Fail()
+	}
+	if _, e := Hclear(zeroByte); e != errNosArgs {
+		t.Fail()
+	}
+
+	// two args methods
+	if _, e := Hget(oneByte); e != errNosArgs {
+		t.Fail()
+	}
+	if _, e := Hdel(oneByte); e != errNosArgs {
+		t.Fail()
+	}
+	if _, e := Hexists(oneByte); e != errNosArgs {
+		t.Fail()
+	}
+	if _, e := MultiHget(oneByte); e != errNosArgs {
+		t.Fail()
+	}
+	if _, e := MultiHdel(oneByte); e != errNosArgs {
+		t.Fail()
+	}
+
+	// theree args methods
+	if _, e := Hset(twoBytes); e != errNosArgs {
+		t.Fail()
+	}
+	if _, e := Hincr(twoBytes); e != errNosArgs {
+		t.Fail()
+	}
+	if _, e := Hlist(twoBytes); e != errNosArgs {
+		t.Fail()
+	}
+	if _, e := Hrlist(twoBytes); e != errNosArgs {
+		t.Fail()
+	}
+
+	// four args methods
+	if _, e := Hkeys(threeBytes); e != errNosArgs {
+		t.Fail()
+	}
+	if _, e := Hscan(threeBytes); e != errNosArgs {
+		t.Fail()
+	}
+	if _, e := Hrscan(threeBytes); e != errNosArgs {
+		t.Fail()
+	}
+
+}
