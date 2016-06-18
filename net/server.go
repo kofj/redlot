@@ -47,6 +47,8 @@ func init() {
 	REGL("HKEYS", ListReply, redlot.Hkeys)
 	REGL("HRKEYS", ListReply, redlot.Hrkeys)
 	REGL("HGETALL", ListReply, redlot.Hgetall)
+	REGL("HSCAN", ListReply, redlot.Hscan)
+	REGL("HRSCAN", ListReply, redlot.Hrscan)
 }
 
 func Serve(addr string, options *redlot.Options) {
