@@ -42,6 +42,7 @@ func init() {
 	REG("HSET", StatusReply, redlot.Hset)
 	REG("HGET", BulkReply, redlot.Hget)
 	REG("HSIZE", IntReply, redlot.Hsize)
+	REGL("HGETALL", ListReply, redlot.Hgetall)
 }
 
 func Serve(addr string, options *redlot.Options) {
