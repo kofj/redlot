@@ -44,6 +44,8 @@ func init() {
 	REG("HINCR", IntReply, redlot.Hincr)
 	REG("HINCRBY", IntReply, redlot.Hincrby)
 	REG("HSIZE", IntReply, redlot.Hsize)
+	REGL("HKEYS", ListReply, redlot.Hkeys)
+	REGL("HRKEYS", ListReply, redlot.Hrkeys)
 	REGL("HGETALL", ListReply, redlot.Hgetall)
 }
 
