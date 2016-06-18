@@ -178,7 +178,7 @@ func Hrlist(args [][]byte) (r []string, err error) {
 	return
 }
 
-func hekys(args [][]byte, reverse bool) (r []string, err error) {
+func hscan(args [][]byte, kv, reverse bool) (r []string, err error) {
 	if _, err = db.Get(encodeHsizeKey(args[0]), nil); err != nil {
 		return
 	}
@@ -205,26 +205,25 @@ func hekys(args [][]byte, reverse bool) (r []string, err error) {
 	limit, _ := strconv.Atoi(string(args[3]))
 
 	iter := db.NewIterator(&util.Range{Start: ks, Limit: ke}, nil)
+	var iters func() bool
 	if reverse {
 		iter.Seek(ke)
-		for iter.Prev() {
-			_, key := decodeHashKey(iter.Key())
-			r = append(r, string(key))
-			limit--
-			if limit <= 0 {
-				break
-			}
-		}
+		iters = iter.Prev
 	} else {
-		for iter.Next() {
-			_, key := decodeHashKey(iter.Key())
-			r = append(r, string(key))
-			limit--
-			if limit <= 0 {
-				break
-			}
+		iters = iter.Next
+	}
+	for iters() {
+		_, key := decodeHashKey(iter.Key())
+		r = append(r, string(key))
+		if kv {
+			r = append(r, string(iter.Value()))
+		}
+		limit--
+		if limit <= 0 {
+			break
 		}
 	}
+
 	iter.Release()
 	err = iter.Error()
 
@@ -238,7 +237,7 @@ func Hkeys(args [][]byte) (r []string, err error) {
 		return nil, errNosArgs
 	}
 
-	r, err = hekys(args, false)
+	r, err = hscan(args, false, false)
 
 	return
 }
@@ -250,7 +249,7 @@ func Hrkeys(args [][]byte) (r []string, err error) {
 		return nil, errNosArgs
 	}
 
-	r, err = hekys(args, true)
+	r, err = hscan(args, false, true)
 
 	return
 }
