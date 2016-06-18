@@ -106,7 +106,14 @@ func Hsize(args [][]byte) (r interface{}, err error) {
 		return nil, errNosArgs
 	}
 
-	return
+	var size int64
+	if b, e := db.Get(encodeHsizeKey(args[0]), nil); e != nil {
+		size = -1
+	} else {
+		size = int64(bytesToUint32(b))
+	}
+
+	return size, nil
 }
 
 // Hlist will list all hashmap in the range.
