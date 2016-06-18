@@ -109,6 +109,20 @@ func Hincr(args [][]byte) (r interface{}, err error) {
 
 	return hincr(key, 1)
 }
+
+// Hincrby will incr number a hashmap value by the key.
+// Args: name string, key string, value int
+func Hincrby(args [][]byte) (r interface{}, err error) {
+	if len(args) < 3 {
+		return nil, errNosArgs
+	}
+	key := encodeHashKey(args[0], args[1])
+	i, e := strconv.Atoi(string(args[2]))
+	if e != nil {
+		return -1, errNotInt
+	}
+
+	return hincr(key, i)
 }
 
 // Hexists will check the hashmap key is exists.
