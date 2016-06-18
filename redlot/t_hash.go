@@ -64,8 +64,9 @@ func Hget(args [][]byte) (r interface{}, err error) {
 	if len(args) < 2 {
 		return nil, errNosArgs
 	}
-
-	return
+	var b []byte
+	b, err = db.Get(encodeHashKey(args[0], args[1]), nil)
+	return string(b), err
 }
 
 // Hdel will delete a hashmap value by the key.
