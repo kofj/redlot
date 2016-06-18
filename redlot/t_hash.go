@@ -178,12 +178,79 @@ func Hrlist(args [][]byte) (r []string, err error) {
 	return
 }
 
+func hekys(args [][]byte, reverse bool) (r []string, err error) {
+	if _, err = db.Get(encodeHsizeKey(args[0]), nil); err != nil {
+		return
+	}
+
+	if len(args[1]) != 0 && string(args[1]) >= string(args[2]) {
+		return []string{""}, nil
+	}
+
+	var ks, ke []byte
+	if len(args[1]) == 0 {
+		ks = append(ks, typeHASH)
+		ks = append(ks, uint32ToBytes(uint32(len(args[0])))...)
+		ks = append(ks, args[0]...)
+	} else {
+		ks = encodeHashKey(args[0], args[1])
+	}
+
+	if len(args[2]) == 0 {
+		ke = append(ks, []byte{0xff}...)
+	} else {
+		ke = encodeHashKey(args[0], args[2])
+	}
+
+	limit, _ := strconv.Atoi(string(args[3]))
+
+	iter := db.NewIterator(&util.Range{Start: ks, Limit: ke}, nil)
+	if reverse {
+		iter.Seek(ke)
+		for iter.Prev() {
+			_, key := decodeHashKey(iter.Key())
+			r = append(r, string(key))
+			limit--
+			if limit <= 0 {
+				break
+			}
+		}
+	} else {
+		for iter.Next() {
+			_, key := decodeHashKey(iter.Key())
+			r = append(r, string(key))
+			limit--
+			if limit <= 0 {
+				break
+			}
+		}
+	}
+	iter.Release()
+	err = iter.Error()
+
+	return
+}
+
 // Hkeys will list the hashmap keys in the range.
 // Args: name string, start string, end string, limit int
 func Hkeys(args [][]byte) (r []string, err error) {
 	if len(args) < 4 {
 		return nil, errNosArgs
 	}
+
+	r, err = hekys(args, false)
+
+	return
+}
+
+// Hrkeys will reverse list the hashmap keys in the range.
+// Args: name string, start string, end string, limit int
+func Hrkeys(args [][]byte) (r []string, err error) {
+	if len(args) < 4 {
+		return nil, errNosArgs
+	}
+
+	r, err = hekys(args, true)
 
 	return
 }
