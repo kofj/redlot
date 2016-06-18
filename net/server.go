@@ -37,6 +37,9 @@ func init() {
 	REGL("MULTI_GET", ListReply, redlot.MultiGet)
 	REG("MULTI_SET", StatusReply, redlot.MultiSet)
 	REG("MULTI_DEL", StatusReply, redlot.MultiDel)
+
+	// Hashmap
+	REG("HSET", StatusReply, redlot.Hset)
 }
 
 func Serve(addr string, options *redlot.Options) {
