@@ -87,18 +87,25 @@ func Hdel(args [][]byte) (r interface{}, err error) {
 	return
 }
 
-func hincr(key []byte, increment int) (r int64, err error) {
-	v, _ := db.Get(key, nil)
+func hincr(name, key []byte, increment int) (r int64, err error) {
+	hash := encodeHashKey(name, key)
+	v, _ := db.Get(hash, nil)
 	var number int
+	var exists bool
 	if len(v) != 0 {
-		var err error
 		number, err = strconv.Atoi(string(v))
+		exists = true
 		if err != nil {
 			return -1, errNotInt
 		}
 	}
 	number += increment
-	return int64(number), db.Put(key, []byte(strconv.Itoa(number)), nil)
+	r = int64(number)
+	err = db.Put(hash, []byte(strconv.Itoa(number)), nil)
+	if err == nil && !exists {
+		hashSizeIncr(name, 1)
+	}
+	return
 }
 
 // Hincr will incr a hashmap value by the key.
@@ -107,9 +114,8 @@ func Hincr(args [][]byte) (r interface{}, err error) {
 	if len(args) < 2 {
 		return nil, errNosArgs
 	}
-	key := encodeHashKey(args[0], args[1])
 
-	return hincr(key, 1)
+	return hincr(args[0], args[1], 1)
 }
 
 // Hincrby will incr number a hashmap value by the key.
@@ -118,13 +124,12 @@ func Hincrby(args [][]byte) (r interface{}, err error) {
 	if len(args) < 3 {
 		return nil, errNosArgs
 	}
-	key := encodeHashKey(args[0], args[1])
 	i, e := strconv.Atoi(string(args[2]))
 	if e != nil {
 		return -1, errNotInt
 	}
 
-	return hincr(key, i)
+	return hincr(args[0], args[1], i)
 }
 
 // Hexists will check the hashmap key is exists.
