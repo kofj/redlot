@@ -49,6 +49,12 @@ func Hset(args [][]byte) (r interface{}, err error) {
 		return nil, errNosArgs
 	}
 
+	hashSizeIncr(args[0], args[1])
+	err = db.Put(encodeHashKey(args[0], args[1]), args[2], nil)
+	if err != nil {
+		return nil, err
+	}
+
 	return
 }
 
