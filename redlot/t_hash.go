@@ -1,6 +1,10 @@
 package redlot
 
-import "github.com/syndtr/goleveldb/leveldb/util"
+import (
+	"strconv"
+
+	"github.com/syndtr/goleveldb/leveldb/util"
+)
 
 func encodeHashKey(name, key []byte) (buf []byte) {
 	buf = append(buf, typeHASH)
@@ -81,14 +85,30 @@ func Hdel(args [][]byte) (r interface{}, err error) {
 	return
 }
 
+func hincr(key []byte, increment int) (r int64, err error) {
+	v, _ := db.Get(key, nil)
+	var number int
+	if len(v) != 0 {
+		var err error
+		number, err = strconv.Atoi(string(v))
+		if err != nil {
+			return -1, errNotInt
+		}
+	}
+	number += increment
+	return int64(number), db.Put(key, []byte(strconv.Itoa(number)), nil)
+}
+
 // Hincr will incr a hashmap value by the key.
-// Args: name string, key string, value int
+// Args: name string, key string
 func Hincr(args [][]byte) (r interface{}, err error) {
 	if len(args) < 2 {
 		return nil, errNosArgs
 	}
+	key := encodeHashKey(args[0], args[1])
 
-	return
+	return hincr(key, 1)
+}
 }
 
 // Hexists will check the hashmap key is exists.
