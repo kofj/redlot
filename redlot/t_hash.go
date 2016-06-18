@@ -23,13 +23,12 @@ func decodeHashKey(b []byte) (name, key []byte) {
 
 func encodeHsizeKey(name []byte) (buf []byte) {
 	buf = append(buf, typeHSIZE)
-	buf = append(buf, uint32ToBytes(uint32(len(name)))...)
 	buf = append(buf, name...)
 	return
 }
 
 func decodeHsizeKey(b []byte) (key []byte) {
-	return b[5:]
+	return b[1:]
 }
 
 func hashSizeIncr(name []byte, incr int) {

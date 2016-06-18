@@ -28,7 +28,7 @@ func TestDecodeHashKey(t *testing.T) {
 
 func TestEncodeHsizeKey(t *testing.T) {
 	name := []byte("name")
-	expect := []byte{0x48, 0x00, 0x00, 0x00, 0x04, 0x6e, 0x61, 0x6d, 0x65}
+	expect := []byte{0x48, 0x6e, 0x61, 0x6d, 0x65}
 	encoded := encodeHsizeKey(name)
 	if !bytes.Equal(expect, encoded) {
 		t.Logf("\nexcept: \n\t %v \nencoded: \n\t %v\n", expect, encoded)
@@ -37,7 +37,7 @@ func TestEncodeHsizeKey(t *testing.T) {
 }
 
 func TestDecodeHsizeKey(t *testing.T) {
-	raw := []byte{0x48, 0x00, 0x00, 0x00, 0x04, 0x6e, 0x61, 0x6d, 0x65}
+	raw := []byte{0x48, 0x6e, 0x61, 0x6d, 0x65}
 	name := decodeHsizeKey(raw)
 	if !bytes.Equal([]byte("name"), name) {
 		t.Logf("\nexcept: \n\t 0x6e 0x61 0x6d 0x65 \ndecoded: \n\t % #x\n", name)
