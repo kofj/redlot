@@ -109,15 +109,18 @@ func TestHashFuncsArgs(t *testing.T) {
 
 func TestHashSizeIncr(t *testing.T) {
 	name := []byte("hash")
-	key := []byte("key")
 
-	db.Delete(encodeHashKey(name, key), nil)
 	db.Delete(encodeHsizeKey(name), nil)
 
-	hashSizeIncr(name, key)
-
+	hashSizeIncr(name, 1)
 	if b, err := db.Get(encodeHsizeKey(name), nil); bytesToUint32(b) != 1 || err != nil {
 		t.Logf("expect hisize is 1, but get: %d\n", bytesToUint32(b))
+		t.Fail()
+	}
+
+	hashSizeIncr(name, -1)
+	if b, err := db.Get(encodeHsizeKey(name), nil); bytesToUint32(b) != 0 || err != nil {
+		t.Logf("expect hisize is 0, but get: %d\n", bytesToUint32(b))
 		t.Fail()
 	}
 

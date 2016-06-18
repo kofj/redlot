@@ -43,7 +43,7 @@ func hashSizeIncr(name []byte, incr int) {
 	if incr > 0 {
 		size += uint32(incr)
 	} else {
-		size -= uint32(incr)
+		size = size - uint32(0-incr)
 	}
 	db.Put(hsize, uint32ToBytes(size), nil)
 }
