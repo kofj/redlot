@@ -67,6 +67,9 @@ func TestHashFuncsArgs(t *testing.T) {
 	if _, e := Hget(oneByte); e != errNosArgs {
 		t.Fail()
 	}
+	if _, e := Hincr(oneByte); e != errNosArgs {
+		t.Fail()
+	}
 	if _, e := Hdel(oneByte); e != errNosArgs {
 		t.Fail()
 	}
@@ -82,9 +85,6 @@ func TestHashFuncsArgs(t *testing.T) {
 
 	// theree args methods
 	if _, e := Hset(twoBytes); e != errNosArgs {
-		t.Fail()
-	}
-	if _, e := Hincr(twoBytes); e != errNosArgs {
 		t.Fail()
 	}
 	if _, e := Hlist(twoBytes); e != errNosArgs {
