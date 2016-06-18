@@ -1,5 +1,7 @@
 package redlot
 
+import "github.com/syndtr/goleveldb/leveldb/util"
+
 func encodeHashKey(name, key []byte) (buf []byte) {
 	buf = append(buf, typeHASH)
 	buf = append(buf, uint32ToBytes(uint32(len(name)))...)
@@ -153,6 +155,24 @@ func Hgetall(args [][]byte) (r []string, err error) {
 		return nil, errNosArgs
 	}
 
+	if _, err = db.Get(encodeHsizeKey(args[0]), nil); err != nil {
+		return
+	}
+
+	var buf []byte
+	buf = append(buf, typeHASH)
+	buf = append(buf, uint32ToBytes(uint32(len(args[0])))...)
+	buf = append(buf, args[0]...)
+	ke := append(buf, []byte{0xff}...)
+
+	iter := db.NewIterator(&util.Range{Start: buf, Limit: ke}, nil)
+	for iter.Next() {
+		_, key := decodeHashKey(iter.Key())
+		r = append(r, string(key))
+		r = append(r, string(iter.Value()))
+	}
+	iter.Release()
+	err = iter.Error()
 	return
 }
 
