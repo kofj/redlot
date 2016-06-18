@@ -289,6 +289,8 @@ func Hscan(args [][]byte) (r []string, err error) {
 		return nil, errNosArgs
 	}
 
+	r, err = hscan(args, true, false)
+
 	return
 }
 
@@ -298,6 +300,8 @@ func Hrscan(args [][]byte) (r []string, err error) {
 	if len(args) < 4 {
 		return nil, errNosArgs
 	}
+
+	r, err = hscan(args, true, true)
 
 	return
 }
