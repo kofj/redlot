@@ -40,6 +40,7 @@ func init() {
 
 	// Hashmap
 	REG("HSET", StatusReply, redlot.Hset)
+	REG("HGET", BulkReply, redlot.Hget)
 }
 
 func Serve(addr string, options *redlot.Options) {
