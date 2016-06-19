@@ -119,8 +119,8 @@ func TestHashSizeIncr(t *testing.T) {
 	}
 
 	hashSizeIncr(name, -1)
-	if b, err := db.Get(encodeHsizeKey(name), nil); bytesToUint32(b) != 0 || err != nil {
-		t.Logf("expect hisize is 0, but get: %d\n", bytesToUint32(b))
+	if b, err := db.Get(encodeHsizeKey(name), nil); len(b) != 0 || err == nil {
+		t.Log("expect hisize is deleted")
 		t.Fail()
 	}
 
