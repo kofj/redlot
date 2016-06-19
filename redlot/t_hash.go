@@ -171,22 +171,59 @@ func Hsize(args [][]byte) (r interface{}, err error) {
 	return size, nil
 }
 
-// Hlist will list all hashmap in the range.
-// Args: start string, end string, limit int
-func Hlist(args [][]byte) (r []string, err error) {
+func hlist(args [][]byte, reverse bool) (r []string, err error) {
 	if len(args) < 3 {
 		return nil, errNosArgs
 	}
 
+	var ks, ke []byte
+	if len(args[0]) == 0 {
+		ks = []byte{0x48, 0x00}
+	} else {
+		ks = encodeHsizeKey(args[0])
+	}
+	if len(args[1]) == 0 {
+		ke = []byte{0x48, 0xff}
+	} else {
+		ke = encodeHsizeKey(args[1])
+	}
+
+	iter := db.NewIterator(&util.Range{Start: ks, Limit: ke}, nil)
+	limit, _ := strconv.Atoi(string(args[2]))
+
+	var iters func() bool
+	if reverse {
+		iter.Seek([]byte{0x48, 0xff})
+		iters = iter.Prev
+	} else {
+		iters = iter.Next
+	}
+	for iters() {
+		key := decodeHsizeKey(iter.Key())
+		r = append(r, string(key))
+		limit--
+		if limit <= 0 {
+			break
+		}
+	}
+
+	iter.Release()
+	err = iter.Error()
+
+	return
+}
+
+// Hlist will list all hashmap in the range.
+// Args: start string, end string, limit int
+func Hlist(args [][]byte) (r []string, err error) {
+	r, err = hlist(args, false)
 	return
 }
 
 // Hrlist will reverse list all hashmap in the range.
 // Args: start string, end string, limit int
 func Hrlist(args [][]byte) (r []string, err error) {
-	if len(args) < 3 {
-		return nil, errNosArgs
-	}
+	r, err = hlist(args, true)
 
 	return
 }
