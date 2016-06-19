@@ -125,3 +125,64 @@ func TestHashSizeIncr(t *testing.T) {
 	}
 
 }
+
+func TestHashFuncs(t *testing.T) {
+
+	Tom := [][]byte{[]byte("Member"), []byte("Tom"), []byte("1001")}
+	Amy := [][]byte{[]byte("Member"), []byte("Amy"), []byte("1002")}
+
+	// test hset
+	if r, e := Hset(Tom); r != nil || e != nil {
+		t.Logf("reply: %v, error: %v\n", r, e)
+		t.Fail()
+	} else {
+		// test hget
+		if r, e := Hget(Tom); r.(string) != "1001" || e != nil {
+			t.Logf("Hget [Tom] expect 1001, but: %v, error: %v\n", r, e)
+			t.Fail()
+		}
+		// test hsize
+		if r, e := Hsize(Tom); r.(int64) != 1 || e != nil {
+			t.Logf("Hsize expect 1, but: %d, error: %v\n", r, e)
+			t.Fail()
+		}
+	}
+
+	// test hsize when set same key field.
+	Hset(Tom)
+	if r, e := Hsize(Tom); r.(int64) != 1 || e != nil {
+		t.Logf("Hsize expect 1, but: %d, error: %v\n", r, e)
+		t.Fail()
+	}
+
+	if r, e := Hset(Amy); r != nil || e != nil {
+		t.Logf("reply: %v, error: %v\n", r, e)
+		t.Fail()
+	} else {
+		if r, e := Hget(Amy); r.(string) != "1002" || e != nil {
+			t.Logf("Hget [Amy] expect 1002, but: %v, error: %v\n", r, e)
+			t.Fail()
+		}
+		// test hsize when set different field in same hash.
+		if r, e := Hsize(Amy); r.(int64) != 2 || e != nil {
+			t.Logf("Hsize expect 1, but: %d, error: %v\n", r, e)
+			t.Fail()
+		}
+	}
+
+	// test hdel and hexists
+	if r, e := Hexists(Amy); r.(int64) != 1 || e != nil {
+		t.Logf("Hexists [Amy] expect 1, but: %d, error: %v\n", r, e)
+		t.Fail()
+	}
+	Hdel(Tom)
+	if r, e := Hexists(Tom); r.(int64) != 0 || e != nil {
+		t.Logf("Hexists [Tom] expect 0, but: %d, error: %v\n", r, e)
+		t.Fail()
+	}
+	Hdel(Amy)
+	if r, e := Hsize(Amy); r.(int64) != -1 || e != nil {
+		t.Logf("Hsize expect -1, but: %d, error: %v\n", r, e)
+	}
+
+}
