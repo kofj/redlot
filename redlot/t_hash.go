@@ -92,7 +92,10 @@ func Hdel(args [][]byte) (r interface{}, err error) {
 	if len(args) < 2 {
 		return nil, errNosArgs
 	}
-
+	err = db.Delete(encodeHashKey(args[0], args[1]), nil)
+	if err == nil {
+		hashSizeIncr(args[0], -1)
+	}
 	return
 }
 
