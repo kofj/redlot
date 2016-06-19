@@ -13,14 +13,22 @@ func KeyRange() string {
 	iter.Prev()
 	kr += "\"" + string(decodeKvKey(iter.Key())) + "\"\n"
 
-	kr += "hash_range.kv\n\t"
+	kr += "key_range.hash\n\t"
 	iter = db.NewIterator(&util.Range{Start: []byte{0x48, 0x00}}, nil)
 	iter.Next()
-	kr += "\"" + string(decodeHsizeKey(iter.Key())) + "\" - "
+	var start string
+	if iter.Key() != nil {
+		start = string(decodeHsizeKey(iter.Key()))
+	}
+	kr += "\"" + start + "\" - "
 
 	iter.Seek([]byte{0x48, 0xff})
 	iter.Prev()
-	kr += "\"" + string(decodeHsizeKey(iter.Key())) + "\"\n"
+	var end string
+	if iter.Key() != nil {
+		end = string(decodeHsizeKey(iter.Key()))
+	}
+	kr += "\"" + end + "\"\n"
 
 	return kr
 }
