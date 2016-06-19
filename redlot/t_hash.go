@@ -3,6 +3,7 @@ package redlot
 import (
 	"strconv"
 
+	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/util"
 )
 
@@ -369,6 +370,31 @@ func Hrscan(args [][]byte) (r []string, err error) {
 func Hclear(args [][]byte) (r interface{}, err error) {
 	if len(args) < 1 {
 		return nil, errNosArgs
+	}
+
+	if _, err = db.Get(encodeHsizeKey(args[0]), nil); err != nil {
+		return
+	}
+
+	var buf []byte
+	buf = append(buf, typeHASH)
+	buf = append(buf, uint32ToBytes(uint32(len(args[0])))...)
+	buf = append(buf, args[0]...)
+	ke := append(buf, []byte{0xff}...)
+
+	iter := db.NewIterator(&util.Range{Start: buf, Limit: ke}, nil)
+	batch := new(leveldb.Batch)
+	for iter.Next() {
+		batch.Delete(iter.Key())
+	}
+	iter.Release()
+	err = iter.Error()
+	if err == nil {
+		err = db.Write(batch, nil)
+	}
+	if err == nil {
+		hsizeKey := encodeHsizeKey(args[0])
+		err = db.Delete(hsizeKey, nil)
 	}
 
 	return
