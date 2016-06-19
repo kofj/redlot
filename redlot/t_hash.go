@@ -60,9 +60,13 @@ func Hset(args [][]byte) (r interface{}, err error) {
 	if len(args) < 3 {
 		return nil, errNosArgs
 	}
+	key := encodeHashKey(args[0], args[1])
 
-	hashSizeIncr(args[0], 1)
-	err = db.Put(encodeHashKey(args[0], args[1]), args[2], nil)
+	if exists, _ := db.Has(key, nil); !exists {
+		hashSizeIncr(args[0], 1)
+	}
+
+	err = db.Put(key, args[2], nil)
 	if err != nil {
 		hashSizeIncr(args[0], -1)
 		return nil, err
