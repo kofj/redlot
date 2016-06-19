@@ -6,6 +6,10 @@ import (
 )
 
 func TestMain(m *testing.M) {
+	// clean env
+	os.RemoveAll("/tmp/data")
+	os.RemoveAll("/tmp/meta")
+
 	os.Exit(func() (r int) {
 		r = m.Run()
 		os.RemoveAll("/tmp/data")
