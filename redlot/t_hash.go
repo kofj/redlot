@@ -151,6 +151,14 @@ func Hexists(args [][]byte) (r interface{}, err error) {
 		return nil, errNosArgs
 	}
 
+	var exists bool
+	exists, err = db.Has(encodeHashKey(args[0], args[1]), nil)
+	if exists {
+		r = int64(1)
+	} else {
+		r = int64(0)
+	}
+
 	return
 }
 
