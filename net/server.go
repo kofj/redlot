@@ -41,6 +41,7 @@ func init() {
 	// Hashmap
 	REG("HSET", StatusReply, redlot.Hset)
 	REG("HGET", BulkReply, redlot.Hget)
+	REG("HDEL", StatusReply, redlot.Hdel)
 	REG("HINCR", IntReply, redlot.Hincr)
 	REG("HINCRBY", IntReply, redlot.Hincrby)
 	REG("HSIZE", IntReply, redlot.Hsize)
