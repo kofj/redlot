@@ -53,6 +53,7 @@ func init() {
 	REGL("HRLIST", ListReply, redlot.Hrlist)
 	REGL("HSCAN", ListReply, redlot.Hscan)
 	REGL("HRSCAN", ListReply, redlot.Hrscan)
+	REG("HCLEAR", StatusReply, redlot.Hclear)
 }
 
 func Serve(addr string, options *redlot.Options) {
