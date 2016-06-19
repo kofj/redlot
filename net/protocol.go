@@ -147,11 +147,11 @@ type listReply struct {
 
 func (r listReply) WriteTo(w io.Writer) (int64, error) {
 	if r.Nil {
-		n, err := w.Write([]byte("*-1"))
+		n, err := w.Write([]byte("*-1\r\n"))
 		return int64(n), err
 	}
 	if len(r.List) == 0 {
-		n, err := w.Write([]byte("*0"))
+		n, err := w.Write([]byte("*0\r\n"))
 		return int64(n), err
 	}
 
