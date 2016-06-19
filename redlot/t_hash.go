@@ -41,10 +41,17 @@ func hashSizeIncr(name []byte, incr int) {
 
 	if incr > 0 {
 		size += uint32(incr)
-	} else {
+	}
+	if incr < 0 && size > 0 {
 		size = size - uint32(0-incr)
 	}
-	db.Put(hsize, uint32ToBytes(size), nil)
+
+	if size == 0 {
+		db.Delete(hsize, nil)
+	}
+	if size > 0 {
+		db.Put(hsize, uint32ToBytes(size), nil)
+	}
 }
 
 // Hset will set a hashmap value by the key.
