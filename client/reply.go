@@ -1,12 +1,13 @@
 package client
 
 const (
-	ReplyOK       = "ok"
+	ReplyOK       = "OK"
 	ReplyNotFound = "not_found"
 	ReplyError    = "error"
+	ReplyFail     = "fail"
 )
 
 type Reply struct {
 	State string
-	Data  []byte
+	Data  [][]byte
 }
