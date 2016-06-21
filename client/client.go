@@ -12,6 +12,7 @@ type Client struct {
 	conn net.Conn
 }
 
+// NewClient will connect to the server and create a client.
 func NewClient(o *Options) (*Client, error) {
 	conn, err := o.getDialer()()
 	return &Client{
@@ -19,6 +20,7 @@ func NewClient(o *Options) (*Client, error) {
 	}, err
 }
 
+// Cmd will send command, receive data from server and build reply.
 func (c *Client) Cmd(args ...interface{}) (r *Reply) {
 	r = &Reply{
 		State: ReplyError,
@@ -38,6 +40,7 @@ func (c *Client) Cmd(args ...interface{}) (r *Reply) {
 	return
 }
 
+// Close socks.
 func (c *Client) Close() {
 	if c.conn != nil {
 		c.conn.Close()
