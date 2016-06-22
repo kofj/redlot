@@ -48,3 +48,25 @@ func TestNewClient(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestCmd(t *testing.T) {
+	r := client.Cmd("set", "k", "v")
+	if r.State != ReplyOK {
+		t.Logf("Cmd [set k v] reply error: %s", r.State)
+		t.Fail()
+	}
+	r = client.Cmd("get", "k")
+	if r.State != ReplyOK {
+		t.Logf("Cmd [get k] reply state error: %s", r.State)
+		t.Fail()
+	}
+	if len(r.Data) != 1 {
+		t.Logf("Cmd [get k] reply length error, expect 1, but %d", len(r.Data))
+		t.Fail()
+	}
+	if string(r.Data[0]) != "v" {
+		t.Logf("Cmd [get k] reply data error, expect string \"v\" , but %s", string(r.Data[0]))
+		t.Fail()
+	}
+
+}
