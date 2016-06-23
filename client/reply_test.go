@@ -13,3 +13,13 @@ func TestBytes(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestString(t *testing.T) {
+	r := client.Cmd("get", "k").String()
+
+	if r != "v" {
+		t.Logf("expect string [v], but get[ %s]\n", r)
+		t.Fail()
+	}
+
+}
