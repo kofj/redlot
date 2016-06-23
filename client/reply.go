@@ -1,5 +1,7 @@
 package client
 
+import "strconv"
+
 const (
 	ReplyOK       = "OK"
 	ReplyNotFound = "not_found"
@@ -26,4 +28,12 @@ func (r *Reply) Bytes() []byte {
 
 func (r *Reply) String() string {
 	return string(r.bytes())
+}
+
+func (r *Reply) Int() int {
+	i, err := strconv.Atoi(r.String())
+	if err != nil {
+		return 0
+	}
+	return i
 }
