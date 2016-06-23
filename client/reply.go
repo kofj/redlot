@@ -23,3 +23,7 @@ func (r *Reply) bytes() []byte {
 func (r *Reply) Bytes() []byte {
 	return r.bytes()
 }
+
+func (r *Reply) String() string {
+	return string(r.bytes())
+}
