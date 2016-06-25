@@ -49,4 +49,29 @@ func TestInt(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestInt32(t *testing.T) {
+	client.Cmd("set", "int32", "2147483647")
+	r := client.Cmd("get", "int32").Int32()
+
+	if r != 2147483647 {
+		t.Logf("expect int [2147483647], but get[ %d]\n", r)
+		t.Fail()
+	}
+
+	client.Cmd("set", "int32", "-2147483648")
+	r = client.Cmd("get", "int32").Int32()
+
+	if r != -2147483648 {
+		t.Logf("expect int [-2147483648], but get[ %d]\n", r)
+		t.Fail()
+	}
+
+	client.Cmd("set", "int32", "2147483648")
+	r = client.Cmd("get", "int32").Int32()
+
+	if r != 2147483647 {
+		t.Logf("expect int [2147483647], but get[ %d]\n", r)
+		t.Fail()
+	}
 }
