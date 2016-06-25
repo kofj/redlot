@@ -35,6 +35,11 @@ func (r *Reply) Int() int {
 	return i
 }
 
+func (r *Reply) Int16() int16 {
+	i, _ := strconv.ParseInt(r.String(), 10, 16)
+	return int16(i)
+}
+
 func (r *Reply) Int32() int32 {
 	i, _ := strconv.ParseInt(r.String(), 10, 32)
 	return int32(i)
