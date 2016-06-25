@@ -163,7 +163,7 @@ func TestUint32(t *testing.T) {
 		t.Fail()
 	}
 
-	client.Cmd("set", "uint32", "65536")
+	client.Cmd("set", "uint32", "4294967296")
 	r = client.Cmd("get", "uint32").Uint32()
 
 	if r != 4294967295 {
