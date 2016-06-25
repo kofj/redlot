@@ -71,7 +71,7 @@ func TestInt32(t *testing.T) {
 	r = client.Cmd("get", "int32").Int32()
 
 	if r != 2147483647 {
-		t.Logf("expect int [2147483647], but get[ %d]\n", r)
+		t.Logf("expect int32 [2147483647], but get[ %d]\n", r)
 		t.Fail()
 	}
 }
@@ -97,7 +97,7 @@ func TestInt64(t *testing.T) {
 	r = client.Cmd("get", "int64").Int64()
 
 	if r != 9223372036854775807 {
-		t.Logf("expect int [9223372036854775807], but get[ %d]\n", r)
+		t.Logf("expect int64 [9223372036854775807], but get[ %d]\n", r)
 		t.Fail()
 	}
 }
@@ -123,7 +123,7 @@ func TestUint8(t *testing.T) {
 	r = client.Cmd("get", "uint8").Uint8()
 
 	if r != 0 {
-		t.Logf("expect int [0], but get[ %d]\n", r)
+		t.Logf("expect uint8 [0], but get[ %d]\n", r)
 		t.Fail()
 	}
 }
