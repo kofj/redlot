@@ -39,3 +39,8 @@ func (r *Reply) Int32() int32 {
 	i, _ := strconv.ParseInt(r.String(), 10, 32)
 	return int32(i)
 }
+
+func (r *Reply) Int64() int64 {
+	i, _ := strconv.ParseInt(r.String(), 10, 64)
+	return i
+}

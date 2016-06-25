@@ -75,3 +75,29 @@ func TestInt32(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestInt64(t *testing.T) {
+	client.Cmd("set", "int64", "9223372036854775807")
+	r := client.Cmd("get", "int64").Int64()
+
+	if r != 9223372036854775807 {
+		t.Logf("expect int [9223372036854775807], but get[ %d]\n", r)
+		t.Fail()
+	}
+
+	client.Cmd("set", "int64", "-9223372036854775808")
+	r = client.Cmd("get", "int64").Int64()
+
+	if r != -9223372036854775808 {
+		t.Logf("expect int [-9223372036854775808], but get[ %d]\n", r)
+		t.Fail()
+	}
+
+	client.Cmd("set", "int64", "9223372036854775808")
+	r = client.Cmd("get", "int64").Int64()
+
+	if r != 9223372036854775807 {
+		t.Logf("expect int [9223372036854775807], but get[ %d]\n", r)
+		t.Fail()
+	}
+}
