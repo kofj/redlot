@@ -39,4 +39,14 @@ func TestInt(t *testing.T) {
 		t.Logf("expect int [9223372036854775807], but get[ %d]\n", r)
 		t.Fail()
 	}
+
+	// test value out of range
+	client.Cmd("set", "int", "9223372036854775808")
+	r = client.Cmd("get", "int").Int()
+
+	if r != 9223372036854775807 {
+		t.Logf("expect int [9223372036854775807], but get[ %d]\n", r)
+		t.Fail()
+	}
+}
 }

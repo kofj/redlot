@@ -31,9 +31,6 @@ func (r *Reply) String() string {
 }
 
 func (r *Reply) Int() int {
-	i, err := strconv.Atoi(r.String())
-	if err != nil {
-		return 0
-	}
+	i, _ := strconv.Atoi(r.String())
 	return i
 }
