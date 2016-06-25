@@ -50,6 +50,32 @@ func TestInt(t *testing.T) {
 	}
 }
 
+func TestInt8(t *testing.T) {
+	client.Cmd("set", "int8", "127")
+	r := client.Cmd("get", "int8").Int8()
+
+	if r != 127 {
+		t.Logf("expect int8 [127], but get[ %d]\n", r)
+		t.Fail()
+	}
+
+	client.Cmd("set", "int8", "-128")
+	r = client.Cmd("get", "int8").Int8()
+
+	if r != -128 {
+		t.Logf("expect int8 [-128], but get[ %d]\n", r)
+		t.Fail()
+	}
+
+	client.Cmd("set", "int8", "128")
+	r = client.Cmd("get", "int8").Int8()
+
+	if r != 127 {
+		t.Logf("expect int8 [127], but get[ %d]\n", r)
+		t.Fail()
+	}
+}
+
 func TestInt16(t *testing.T) {
 	client.Cmd("set", "int16", "32767")
 	r := client.Cmd("get", "int16").Int16()
