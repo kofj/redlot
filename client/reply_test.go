@@ -205,3 +205,29 @@ func TestUint64(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestUint(t *testing.T) {
+	client.Cmd("set", "uint", "18446744073709551615")
+	r := client.Cmd("get", "uint").Uint()
+
+	if r != 18446744073709551615 {
+		t.Logf("expect uint [18446744073709551615], but get[ %d]\n", r)
+		t.Fail()
+	}
+
+	client.Cmd("set", "uint", "18446744073709551616")
+	r = client.Cmd("get", "uint").Uint()
+
+	if r != 18446744073709551615 {
+		t.Logf("expect uint [18446744073709551615], but get[ %d]\n", r)
+		t.Fail()
+	}
+
+	client.Cmd("set", "uint", "-1")
+	r = client.Cmd("get", "uint").Uint()
+
+	if r != 0 {
+		t.Logf("expect uint [0], but get[ %d]\n", r)
+		t.Fail()
+	}
+}

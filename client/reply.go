@@ -64,3 +64,7 @@ func (r *Reply) Uint64() uint64 {
 	i, _ := strconv.ParseUint(r.String(), 10, 64)
 	return i
 }
+
+func (r *Reply) Uint() uint {
+	return uint(r.Uint64())
+}
