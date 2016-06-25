@@ -55,7 +55,7 @@ func TestInt32(t *testing.T) {
 	r := client.Cmd("get", "int32").Int32()
 
 	if r != 2147483647 {
-		t.Logf("expect int [2147483647], but get[ %d]\n", r)
+		t.Logf("expect int32 [2147483647], but get[ %d]\n", r)
 		t.Fail()
 	}
 
@@ -81,7 +81,7 @@ func TestInt64(t *testing.T) {
 	r := client.Cmd("get", "int64").Int64()
 
 	if r != 9223372036854775807 {
-		t.Logf("expect int [9223372036854775807], but get[ %d]\n", r)
+		t.Logf("expect int64 [9223372036854775807], but get[ %d]\n", r)
 		t.Fail()
 	}
 
@@ -107,7 +107,7 @@ func TestUint8(t *testing.T) {
 	r := client.Cmd("get", "int64").Uint8()
 
 	if r != 255 {
-		t.Logf("expect int [255], but get[ %d]\n", r)
+		t.Logf("expect uint8 [255], but get[ %d]\n", r)
 		t.Fail()
 	}
 
@@ -115,7 +115,7 @@ func TestUint8(t *testing.T) {
 	r = client.Cmd("get", "uint8").Uint8()
 
 	if r != 255 {
-		t.Logf("expect int8 [255], but get[ %d]\n", r)
+		t.Logf("expect uint8 [255], but get[ %d]\n", r)
 		t.Fail()
 	}
 
@@ -133,7 +133,7 @@ func TestUint16(t *testing.T) {
 	r := client.Cmd("get", "int64").Uint16()
 
 	if r != 65535 {
-		t.Logf("expect int16 [65535], but get[ %d]\n", r)
+		t.Logf("expect uint16 [65535], but get[ %d]\n", r)
 		t.Fail()
 	}
 
@@ -141,7 +141,7 @@ func TestUint16(t *testing.T) {
 	r = client.Cmd("get", "uint16").Uint16()
 
 	if r != 65535 {
-		t.Logf("expect int16 [65535], but get[ %d]\n", r)
+		t.Logf("expect uint16 [65535], but get[ %d]\n", r)
 		t.Fail()
 	}
 
