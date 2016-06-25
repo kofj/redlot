@@ -101,3 +101,29 @@ func TestInt64(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestUint8(t *testing.T) {
+	client.Cmd("set", "uint8", "255")
+	r := client.Cmd("get", "int64").Uint8()
+
+	if r != 255 {
+		t.Logf("expect int [255], but get[ %d]\n", r)
+		t.Fail()
+	}
+
+	client.Cmd("set", "uint8", "256")
+	r = client.Cmd("get", "uint8").Uint8()
+
+	if r != 255 {
+		t.Logf("expect int [255], but get[ %d]\n", r)
+		t.Fail()
+	}
+
+	client.Cmd("set", "uint8", "-1")
+	r = client.Cmd("get", "uint8").Uint8()
+
+	if r != 0 {
+		t.Logf("expect int [0], but get[ %d]\n", r)
+		t.Fail()
+	}
+}

@@ -44,3 +44,8 @@ func (r *Reply) Int64() int64 {
 	i, _ := strconv.ParseInt(r.String(), 10, 64)
 	return i
 }
+
+func (r *Reply) Uint8() uint8 {
+	i, _ := strconv.ParseUint(r.String(), 10, 8)
+	return uint8(i)
+}
