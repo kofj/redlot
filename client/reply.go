@@ -59,3 +59,8 @@ func (r *Reply) Uint32() uint32 {
 	i, _ := strconv.ParseUint(r.String(), 10, 32)
 	return uint32(i)
 }
+
+func (r *Reply) Uint64() uint64 {
+	i, _ := strconv.ParseUint(r.String(), 10, 64)
+	return i
+}
