@@ -78,3 +78,12 @@ func (r *Reply) Uint64() uint64 {
 func (r *Reply) Uint() uint {
 	return uint(r.Uint64())
 }
+
+func (r *Reply) Bool() bool {
+	if len(r.Data) < 1 {
+		return false
+	}
+
+	b, _ := strconv.ParseBool(r.String())
+	return b
+}
