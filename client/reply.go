@@ -49,3 +49,8 @@ func (r *Reply) Uint8() uint8 {
 	i, _ := strconv.ParseUint(r.String(), 10, 8)
 	return uint8(i)
 }
+
+func (r *Reply) Uint16() uint16 {
+	i, _ := strconv.ParseUint(r.String(), 10, 16)
+	return uint16(i)
+}
