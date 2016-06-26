@@ -2,6 +2,7 @@ package client
 
 import (
 	"bytes"
+	"math"
 	"testing"
 )
 
@@ -298,6 +299,33 @@ func TestBool(t *testing.T) {
 
 	if r != true {
 		t.Logf("expect bool [true], but get %t\n", r)
+		t.Fail()
+	}
+
+}
+
+func TestFloat32(t *testing.T) {
+	client.Cmd("set", "float32", "7.22")
+	r := client.Cmd("get", "float32").Float32()
+
+	if r != 7.22 {
+		t.Logf("expect float32 [7.22], but get %b\n", r)
+		t.Fail()
+	}
+
+	client.Cmd("set", "float32", "inf")
+	r = client.Cmd("get", "float32").Float32()
+
+	if !math.IsInf(float64(r), 1) {
+		t.Logf("expect float32 [+Inf], but get %b\n", r)
+		t.Fail()
+	}
+
+	client.Cmd("set", "float32", "NaN")
+	r = client.Cmd("get", "float32").Float32()
+
+	if !math.IsNaN(float64(r)) {
+		t.Logf("expect float32 [NaN], but get %b\n", r)
 		t.Fail()
 	}
 

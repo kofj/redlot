@@ -87,3 +87,8 @@ func (r *Reply) Bool() bool {
 	b, _ := strconv.ParseBool(r.String())
 	return b
 }
+
+func (r *Reply) Float32() float32 {
+	f, _ := strconv.ParseFloat(r.String(), 32)
+	return float32(f)
+}
