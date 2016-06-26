@@ -50,7 +50,7 @@ func (c *Client) Close() {
 func (c *Client) send(args []interface{}) (err error) {
 	var buf []byte
 
-	buf, err = c.send_buf(args)
+	buf, err = c.sendBuf(args)
 	if err == nil {
 		_, err = c.conn.Write(buf)
 	}
@@ -122,15 +122,18 @@ func (c *Client) recv() (r *Reply) {
 	return
 }
 
-func (c *Client) send_buf(args []interface{}) (b []byte, err error) {
+func (c *Client) sendBuf(args []interface{}) (b []byte, err error) {
 	var buf bytes.Buffer
+	var s, size string
 	buf.WriteString(fmt.Sprintf("*%d\r\n", len(args)))
 
 	for _, arg := range args {
 		switch arg.(type) {
 		case string:
-			buf.WriteString(fmt.Sprintf("$%d\r\n", len(arg.(string))))
-			buf.WriteString(arg.(string) + "\r\n")
+			s = arg.(string)
+			size = fmt.Sprintf("$%d\r\n", len(s))
+			buf.WriteString(size)
+			buf.WriteString(s + "\r\n")
 			continue
 		}
 	}
