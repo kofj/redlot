@@ -283,3 +283,22 @@ func TestUint(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestBool(t *testing.T) {
+	client.Cmd("set", "bool", "true")
+	r := client.Cmd("get", "bool").Bool()
+
+	if r != true {
+		t.Logf("expect bool [true], but get %b\n", r)
+		t.Fail()
+	}
+
+	client.Cmd("set", "bool", "1")
+	r = client.Cmd("get", "bool").Bool()
+
+	if r != true {
+		t.Logf("expect bool [true], but get %t\n", r)
+		t.Fail()
+	}
+
+}
