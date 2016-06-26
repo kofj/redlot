@@ -92,3 +92,8 @@ func (r *Reply) Float32() float32 {
 	f, _ := strconv.ParseFloat(r.String(), 32)
 	return float32(f)
 }
+
+func (r *Reply) Float64() float64 {
+	f, _ := strconv.ParseFloat(r.String(), 64)
+	return f
+}

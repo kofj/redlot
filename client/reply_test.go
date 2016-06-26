@@ -330,3 +330,30 @@ func TestFloat32(t *testing.T) {
 	}
 
 }
+
+func TestFloat64(t *testing.T) {
+	client.Cmd("set", "float64", "15.95")
+	r := client.Cmd("get", "float64").Float64()
+
+	if r != 15.95 {
+		t.Logf("expect float64 [15.95], but get %b\n", r)
+		t.Fail()
+	}
+
+	client.Cmd("set", "float64", "inf")
+	r = client.Cmd("get", "float64").Float64()
+
+	if !math.IsInf(r, 1) {
+		t.Logf("expect float64 [+Inf], but get %b\n", r)
+		t.Fail()
+	}
+
+	client.Cmd("set", "float64", "NaN")
+	r = client.Cmd("get", "float64").Float64()
+
+	if !math.IsNaN(r) {
+		t.Logf("expect float64 [NaN], but get %b\n", r)
+		t.Fail()
+	}
+
+}
