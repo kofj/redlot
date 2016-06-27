@@ -90,7 +90,7 @@ func TestSendBuf(t *testing.T) {
 			t.Fail()
 		}
 		if !bytes.Equal(buf, []byte(test.out)) {
-			t.Logf("%d [% #v] => [% #v], expect: [% #v]\n", k, test.in, buf, test.out)
+			t.Logf("%d [% #v] => [% #v], expect: [% #v]\n", k, test.in, string(buf), test.out)
 			t.Fail()
 		}
 	}
