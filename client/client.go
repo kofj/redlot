@@ -135,7 +135,8 @@ func (c *Client) sendBuf(args []interface{}) (b []byte, err error) {
 			buf.WriteString(size)
 			buf.WriteString(s + "\r\n")
 			continue
-		case int, int8, int16, int32, int64:
+		case int, int8, int16, int32, int64,
+			uint, uint8, uint16, uint32, uint64:
 			s = fmt.Sprintf("%d", arg)
 			size = fmt.Sprintf("$%d\r\n", len(s))
 			buf.WriteString(size)
