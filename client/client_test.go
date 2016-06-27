@@ -78,6 +78,11 @@ func TestSendBuf(t *testing.T) {
 		out string
 	}{
 		{[]interface{}{"set", "age", "19"}, "*3\r\n$3\r\nset\r\n$3\r\nage\r\n$2\r\n19\r\n"},
+		{[]interface{}{"set", "age", int(19)}, "*3\r\n$3\r\nset\r\n$3\r\nage\r\n$2\r\n19\r\n"},
+		{[]interface{}{"set", "age", int8(19)}, "*3\r\n$3\r\nset\r\n$3\r\nage\r\n$2\r\n19\r\n"},
+		{[]interface{}{"set", "age", int16(19)}, "*3\r\n$3\r\nset\r\n$3\r\nage\r\n$2\r\n19\r\n"},
+		{[]interface{}{"set", "age", int32(19)}, "*3\r\n$3\r\nset\r\n$3\r\nage\r\n$2\r\n19\r\n"},
+		{[]interface{}{"set", "age", int64(19)}, "*3\r\n$3\r\nset\r\n$3\r\nage\r\n$2\r\n19\r\n"},
 	}
 
 	var buf []byte
