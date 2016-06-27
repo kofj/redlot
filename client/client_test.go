@@ -73,25 +73,25 @@ func TestCmd(t *testing.T) {
 }
 
 func TestSendBuf(t *testing.T) {
-	var args []interface{}
-	var buf, expect []byte
+	var tests = []struct {
+		in  []interface{}
+		out string
+	}{
+		{[]interface{}{"set", "age", "19"}, "*3\r\n$3\r\nset\r\n$3\r\nage\r\n$2\r\n19\r\n"},
+	}
+
+	var buf []byte
 	var err error
 
-	// test string arg
-	args = []interface{}{
-		"set",
-		"age",
-		"19",
-	}
-	expect = []byte("*3\r\n$3\r\nset\r\n$3\r\nage\r\n$2\r\n19\r\n")
-
-	buf, err = client.sendBuf(args)
-	if err != nil {
-		t.Logf("expect err is nil, but %s\n", err.Error())
-		t.Fail()
-	}
-	if !bytes.Equal(buf, expect) {
-		t.Logf("expect buf is [% #x], but get [% #x]", buf, expect)
-		t.Fail()
+	for k, test := range tests {
+		buf, err = client.sendBuf(test.in)
+		if err != nil {
+			t.Logf("%d [% #v] => [% #v], error: %s\n", k, test.in, buf, err.Error())
+			t.Fail()
+		}
+		if !bytes.Equal(buf, []byte(test.out)) {
+			t.Logf("%d [% #v] => [% #v], expect: [% #v]\n", k, test.in, buf, test.out)
+			t.Fail()
+		}
 	}
 }
