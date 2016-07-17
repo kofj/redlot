@@ -131,29 +131,29 @@ func (c *Client) sendBuf(args []interface{}) (b []byte, err error) {
 		switch arg.(type) {
 		case string:
 			s = arg.(string)
-			size = fmt.Sprintf("$%d\r\n", len(s))
-			buf.WriteString(size)
-			buf.WriteString(s + "\r\n")
-			continue
+
 		case int, int8, int16, int32, int64,
 			uint, uint8, uint16, uint32, uint64:
 			s = fmt.Sprintf("%d", arg)
-			size = fmt.Sprintf("$%d\r\n", len(s))
-			buf.WriteString(size)
-			buf.WriteString(s + "\r\n")
 
 		case float32:
 			s = strconv.FormatFloat(float64(arg.(float32)), 'f', -1, 32)
-			size = fmt.Sprintf("$%d\r\n", len(s))
-			buf.WriteString(size)
-			buf.WriteString(s + "\r\n")
+
 		case float64:
 			s = strconv.FormatFloat(arg.(float64), 'f', -1, 64)
-			size = fmt.Sprintf("$%d\r\n", len(s))
-			buf.WriteString(size)
-			buf.WriteString(s + "\r\n")
+
+		case bool:
+		case nil:
+		case []byte:
+		case [][]byte:
+		case []string:
 
 		}
+
+		size = fmt.Sprintf("$%d\r\n", len(s))
+		buf.WriteString(size)
+		buf.WriteString(s + "\r\n")
+
 	}
 
 	b = buf.Bytes()
