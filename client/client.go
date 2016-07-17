@@ -128,19 +128,37 @@ func (c *Client) sendBuf(args []interface{}) (b []byte, err error) {
 	buf.WriteString(fmt.Sprintf("*%d\r\n", len(args)))
 
 	for _, arg := range args {
-		switch arg.(type) {
+		switch t := arg.(type) {
 		case string:
-			s = arg.(string)
+			s = t
 
-		case int, int8, int16, int32, int64,
-			uint, uint8, uint16, uint32, uint64:
-			s = fmt.Sprintf("%d", arg)
+		case int:
+			s = strconv.FormatInt(int64(t), 10)
+		case int8:
+			s = strconv.FormatInt(int64(t), 10)
+		case int16:
+			s = strconv.FormatInt(int64(t), 10)
+		case int32:
+			s = strconv.FormatInt(int64(t), 10)
+		case int64:
+			s = strconv.FormatInt(int64(t), 10)
+
+		case uint:
+			s = strconv.FormatUint(uint64(t), 10)
+		case uint8:
+			s = strconv.FormatUint(uint64(t), 10)
+		case uint16:
+			s = strconv.FormatUint(uint64(t), 10)
+		case uint32:
+			s = strconv.FormatUint(uint64(t), 10)
+		case uint64:
+			s = strconv.FormatUint(uint64(t), 10)
 
 		case float32:
-			s = strconv.FormatFloat(float64(arg.(float32)), 'f', -1, 32)
+			s = strconv.FormatFloat(float64(t), 'f', -1, 32)
 
 		case float64:
-			s = strconv.FormatFloat(arg.(float64), 'f', -1, 64)
+			s = strconv.FormatFloat(t, 'f', -1, 64)
 
 		case bool:
 		case nil:
