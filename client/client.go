@@ -164,6 +164,7 @@ func (c *Client) sendBuf(args []interface{}) (b []byte, err error) {
 			s = strconv.FormatBool(t)
 		case nil:
 		case []byte:
+			s = string(t)
 		case [][]byte:
 		case []string:
 
